@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { DataService } from '../services/_services/data.service';
-import { PrndlType, RpmZone, UnitsType } from '../models';
+import { IRpmZone, PrndlType, TireType, UnitsType } from '../models';
 
 @Component({
   selector: 'app-dash',
@@ -29,8 +29,9 @@ export class DashComponent implements OnInit, OnDestroy {
 
   minorTicks: number[] = [];
 
+  zones: IRpmZone[] = [];
 
-  zones: RpmZone[] = [];
+  tires: TireType[] = [ 'FrontLeft', 'FrontRight', 'RearLeft', 'RearRight' ];
 
   private _subscriptions: Subscription[] = [];
 

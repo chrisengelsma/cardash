@@ -23,7 +23,8 @@
 
     <g id="tachometer" style="transform-origin: center center;" transform="scale(0.33)">
 
-      <g [attr.transform]="'translate(0, ' + halfDimension + ') scale(1, -1) translate(0, ' + -halfDimension + ')'">
+      <g id="rpm"
+         [attr.transform]="'translate(0, ' + halfDimension + ') scale(1, -1) translate(0, ' + -halfDimension + ')'">
 
         <g id="rpmZones">
 
@@ -139,18 +140,6 @@
                 [style.transform]="tickRotation(tick)"
                 [style.stroke]="mainTickColor(tick)"></line>
 
-          <!--
-          <line *ngFor="let tick of mainTicks"
-                class="main-tick"
-                stroke-width="3"
-                [attr.x1]="halfDimension + 'px'"
-                [attr.x2]="halfDimension + 'px'"
-                [attr.y1]="0.588 * meterDimension  + 'px'"
-                [attr.y2]="0.525 * meterDimension + 'px'"
-                [style.transform]="tickRotation(tick)"
-                stroke="#313a57"></line>
-                -->
-
         </g>
 
         <g id="needle" [attr.transform]="'translate(0 ' + -halfDimension + ')'">
@@ -217,36 +206,24 @@
 
       </g>
 
+      <!--
+      <g id="tireStatus" style="transform-origin: center center;">
+        <text [attr.x]="-2 * halfDimension / 3 + 'px'"
+              [attr.y]="halfDimension / 2 + 'px'"
+              class="middle-anchor"
+              font-size="36pt"
+              fill="red">
+          Tire Status
+        </text>
+
+        <g id="tirePressures" *ngFor="let tire of tires; let i = index;">
+          <rect [attr.x]="-2 * halfDimension / 3 + (i % 2) * 60"
+                [attr.y]="halfDimension / 2 + (i % 3) * 80"
+                width="20" height="40" fill="green"></rect>
+        </g>
+      </g>
+      -->
     </g>
-
-    <g id="debug" *ngIf="debug">
-      <line [attr.x1]="halfDimension + 'px'"
-            [attr.x2]="halfDimension + 'px'"
-            [attr.y1]="0"
-            [attr.y2]="meterDimension + 'px'"
-            class="debug"
-            stroke-opacity="0.5"
-            stroke="white"></line>
-
-      <line [attr.x1]="0"
-            [attr.x2]="meterDimension + 'px'"
-            [attr.y1]="halfDimension + 'px'"
-            [attr.y2]="halfDimension + 'px'"
-            class="debug"></line>
-
-      <line [attr.x1]="0"
-            [attr.x2]="meterDimension"
-            [attr.y1]="0"
-            [attr.y2]="meterDimension"
-            class="debug"></line>
-
-      <line [attr.x1]="meterDimension"
-            [attr.x2]="0"
-            [attr.y1]="0"
-            [attr.y2]="meterDimension"
-            class="debug"></line>
-    </g>
-
 
   </svg>
 </div>

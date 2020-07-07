@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { DataService } from '../../services/_services/data.service';
 import { MatSliderChange } from '@angular/material/slider';
-import { PrndlType, UnitsType } from '../../models';
+import { PrndlType, TireType, UnitsType } from '../../models';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatRadioChange } from '@angular/material/radio';
@@ -19,12 +19,17 @@ export class ControlsComponent implements OnInit, OnDestroy {
   @Input() maxRpm: number = 7000;
   @Input() maxSpeed: number = 120;
   @Input() maxGear: number = 8;
+  @Input() minTirePressure: number = 28;
+  @Input() maxTirePressure: number = 42;
+
+  tires: TireType[] = [ 'FrontLeft', 'FrontRight', 'RearLeft', 'RearRight' ];
 
   rpm: number = 0;
   speed: number = 0;
   prndl: PrndlType = 'P';
   gear: number = 1;
   units: UnitsType = 'Imperial';
+  tirePressure: number[] = [ 30, 30, 30, 30 ];
   debug: boolean = false;
 
   subscriptions: Subscription[] = [];
@@ -49,21 +54,33 @@ export class ControlsComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateSpeed(event: MatSliderChange): void {
-    this._dataService.speed = event.value;
+  updateTirePressure(event: MatSliderChange, tire: TireType): void {
+    const pressure = event.source.value;
+    const tirePressure = this.tirePressure;
+    switch (tire) {
+      case 'FrontLeft':
+        tirePressure[0] = pressure;
+        break;
+      case 'FrontRight':
+        tirePressure[1] = pressure;
+        break;
+      case 'RearLeft':
+        tirePressure[2] = pressure;
+        break;
+      default:
+        tirePressure[3] = pressure;
+        break;
+    }
+    this._dataService.tirePressure = tirePressure;
   }
 
-  updateGear(event: MatSliderChange): void {
-    this._dataService.gear = event.value;
-  }
+  updateSpeed(event: MatSliderChange): void { this._dataService.speed = event.value; }
 
-  updateUnits(event: MatRadioChange): void {
-    this._dataService.units = event.value;
-  }
+  updateGear(event: MatSliderChange): void { this._dataService.gear = event.value; }
 
-  updateDebug(event: MatCheckboxChange): void {
-    this._dataService.debug = event.checked;
-  }
+  updateUnits(event: MatRadioChange): void { this._dataService.units = event.value; }
+
+  updateDebug(event: MatCheckboxChange): void { this._dataService.debug = event.checked; }
 
   ngOnInit(): void {
     this._form = this._formBuilder.group({
@@ -72,12 +89,17 @@ export class ControlsComponent implements OnInit, OnDestroy {
       speed: [ this.speed ],
       gear: [ this.gear ],
       units: [ this.units ],
+      tirePressureFrontLeft: [ this.tirePressure[0] ],
+      tirePressureFrontRight: [ this.tirePressure[1] ],
+      tirePressureRearLeft: [ this.tirePressure[2] ],
+      tirePressureRearRight: [ this.tirePressure[3] ],
       debug: [ this.debug ]
     });
 
     this.subscriptions.push(this._dataService.rpm$.subscribe(rpm => this.rpm = rpm));
     this.subscriptions.push(this._dataService.prndl$.subscribe(prndl => this.prndl = prndl));
     this.subscriptions.push(this._dataService.speed$.subscribe(speed => this.speed = speed));
+    this.subscriptions.push(this._dataService.tirePressure$.subscribe(tirePressure => this.tirePressure = tirePressure));
     this.subscriptions.push(this._dataService.gear$.subscribe(gear => this.gear = gear));
     this.subscriptions.push(this._dataService.units$.subscribe(units => this.units = units));
     this.subscriptions.push(this._dataService.debug$.subscribe(debug => this.debug = debug));

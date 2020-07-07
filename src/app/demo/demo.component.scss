@@ -1,10 +1,19 @@
 .dash-wrapper {
   position: relative;
   display: block;
-  width: 100%;
-  max-height: 65vh;
+  width: 100vw;
+  max-height: 60vh;
 }
 
-.dashed {
-  border: 1px dashed #212033;
+.options-wrapper {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  max-height: 40vh;
+  overflow-y: auto;
+
 }
+
