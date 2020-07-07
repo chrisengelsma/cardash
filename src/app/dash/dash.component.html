@@ -1,0 +1,252 @@
+<div id="wrapper">
+
+  <svg id="dashboard"
+       [attr.viewBox]="'0 0 ' + meterDimension + ' ' + meterDimension"
+       [ngClass]="debug ? 'debug': ''"
+       preserveAspectRatio="xMidYMid slice">
+
+    <defs>
+      <style
+        type="text/css">@import url('https://fonts.googleapis.com/css?family=Lato|Open+Sans|Oswald|Raleway|Roboto|Indie+Flower|Gamja+Flower');</style>
+
+      <linearGradient id="linearGradient" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" stop-color="#fff"/>
+        <stop offset="100%" stop-color="#ccc"/>
+      </linearGradient>
+    </defs>
+
+    <g id="dashOutline">
+      <image [attr.y]="meterDimension / 4 + 60+ 'px'"
+             [attr.width]="'100%'"
+             xlink:href="/assets/glyphs/dash-outline.svg"/>
+    </g>
+
+    <g id="tachometer" style="transform-origin: center center;" transform="scale(0.33)">
+
+      <g [attr.transform]="'translate(0, ' + halfDimension + ') scale(1, -1) translate(0, ' + -halfDimension + ')'">
+
+        <g id="rpmZones">
+
+          <circle cx="50.5%" cy="1.8%" fill="white" [attr.r]="5"></circle>
+          <circle cx="98.2%" cy="49.5%" fill="white" [attr.r]="5"></circle>
+
+          <circle *ngFor="let zone of zones"
+                  class="circle outline"
+                  cx="50%"
+                  cy="50%"
+                  [attr.r]="radius + 34"
+                  [attr.stroke]="zone.outlineColor"
+                  [attr.stroke-dasharray]="zoneRadiusCf(1.085, zone.low)">
+          </circle>
+
+          <!-- RPM Zones -->
+          <circle *ngFor="let zone of zones"
+                  class="circle zone"
+                  cx="50%"
+                  cy="50%"
+                  [attr.stroke]="zone.color"
+                  [attr.stroke-dasharray]="zoneDashArray(zone.low)"
+                  [attr.r]="radius"></circle>
+
+        </g>
+
+        <g id="tachometerMask">
+          <circle cx="50%"
+                  cy="50%"
+                  class="circle mask"
+                  [attr.r]="radius"
+                  [attr.stroke]="'url(#linearGradient)'"
+                  [attr.stroke-dasharray]="maskDashArray"></circle>
+        </g>
+
+        <g id="concentricCircles">
+          <circle class="circle"
+                  r="18%"
+                  stroke-opacity="0.5"
+                  stroke="white"
+                  cx="50%"
+                  cy="50%">
+          </circle>
+
+          <circle class="circle"
+                  r="21%"
+                  stroke-opacity="0.5"
+                  stroke="white"
+                  [attr.stroke-dasharray]="radiusCf(0.47)"
+                  cx="50%"
+                  cy="50%"></circle>
+
+          <circle class="circle"
+                  r="24%"
+                  stroke-opacity="0.5"
+                  stroke="white"
+                  [attr.stroke-dasharray]="radiusCf(0.536)"
+                  cx="50%"
+                  cy="50%"></circle>
+
+          <circle class="circle"
+                  r="27%"
+                  stroke-opacity="0.5"
+                  stroke="white"
+                  [attr.stroke-dasharray]="radiusCf(.605)"
+                  cx="50%"
+                  cy="50%"></circle>
+
+        </g>
+
+        <g id="ticks" [attr.transform]="'translate(0 ' + -halfDimension + ')'">
+
+          <line *ngFor="let tick of midTicks"
+                class="main-tick"
+                stroke-width="8"
+                [attr.x1]="halfDimension + 'px'"
+                [attr.x2]="halfDimension + 'px'"
+                [attr.y1]="0.61 * meterDimension  + 'px'"
+                [attr.y2]="0.6 * meterDimension + 'px'"
+                [style.transform]="tickRotation(tick)"
+                stroke-linecap="round"
+                stroke-opacity="0.5"
+                stroke="white"></line>
+
+          <line *ngFor="let tick of minorTicks"
+                class="main-tick"
+                stroke-width="8"
+                [attr.x1]="halfDimension + 'px'"
+                [attr.x2]="halfDimension + 'px'"
+                [attr.y1]="0.6 * meterDimension  + 'px'"
+                [attr.y2]="0.6 * meterDimension + 'px'"
+                [style.transform]="tickRotation(tick)"
+                stroke-linecap="round"
+                stroke-opacity="0.5"
+                stroke="white"></line>
+
+          <text *ngFor="let tick of mainTicks"
+                class="tick-labels middle-anchor"
+                font-size="48pt"
+                [attr.fill]="mainTickColor(tick)"
+                [attr.x]="halfDimension"
+                [attr.y]="meterDimension"
+                [style.transform]="tickLabelPosition(tick)">{{ tick / 1000 }}</text>
+
+
+          <line *ngFor="let tick of mainTicks"
+                class="main-tick"
+                stroke-width="10"
+                [attr.x1]="halfDimension + 'px'"
+                [attr.x2]="halfDimension + 'px'"
+                [attr.y1]="0.63 * meterDimension  + 'px'"
+                [attr.y2]="0.59 * meterDimension + 'px'"
+                [style.transform]="tickRotation(tick)"
+                [style.stroke]="mainTickColor(tick)"></line>
+
+          <!--
+          <line *ngFor="let tick of mainTicks"
+                class="main-tick"
+                stroke-width="3"
+                [attr.x1]="halfDimension + 'px'"
+                [attr.x2]="halfDimension + 'px'"
+                [attr.y1]="0.588 * meterDimension  + 'px'"
+                [attr.y2]="0.525 * meterDimension + 'px'"
+                [style.transform]="tickRotation(tick)"
+                stroke="#313a57"></line>
+                -->
+
+        </g>
+
+        <g id="needle" [attr.transform]="'translate(0 ' + -halfDimension + ')'">
+
+          <line id="needle"
+                [attr.stroke-width]="needleWidth"
+                [attr.x1]="halfDimension + 'px'"
+                [attr.x2]="halfDimension + 'px'"
+                [attr.y1]="0.530 * meterDimension + 'px'"
+                [attr.y2]="0.815 * meterDimension + 'px'"
+                [style.transform]="needleRotation"
+                stroke-linecap="round"
+                stroke="red"></line>
+        </g>
+      </g>
+
+      <g id="labels" [attr.transform]="'translate(0, ' + -halfDimension + ')'">
+
+        <text [attr.x]="isInDrive ? halfDimension - 30 + 'px': halfDimension + 'px'"
+              class="middle-anchor"
+              [attr.y]="meterDimension + 20 + 'px'"
+              fill="white"
+              font-size="140pt">{{ prndl }}</text>
+
+        <text *ngIf="isInDrive"
+              class="middle-anchor"
+              [attr.x]="70 + halfDimension + 'px'"
+              [attr.y]="meterDimension + 20 + 'px'"
+              fill="white"
+              font-size="70pt">{{ gear }}</text>
+
+        <text [attr.x]="4 * halfDimension / 3 + 'px'"
+              [attr.y]="5 * meterDimension / 4 + 'px'"
+              class="left-anchor"
+              fill="white"
+              font-size="120pt">{{ speed }}</text>
+
+        <text [attr.y]="meterDimension + 50 + 'px'"
+              class="right-anchor"
+              fill="white"
+              fill-opacity="0.5"
+              font-size="30pt">
+          <tspan [attr.x]="meterDimension - 30">RPM</tspan>
+          <tspan [attr.x]="meterDimension - 30" font-size="24pt" dy="30">/1000</tspan>
+        </text>
+
+        <image [attr.x]="40 + 2 * meterDimension / 3 + 'px'"
+               [attr.y]="1.32 *  meterDimension  + 'px'"
+               width="70"
+               xlink:href="/assets/glyphs/tachometer-glyph.svg"/>
+
+        <text class="left-anchor"
+              [attr.x]="120 + 2 * meterDimension / 3 + 'px'"
+              [attr.y]="30 + 1.32 * meterDimension + 'px'"
+              fill="white"
+              font-size="30pt">
+          {{ speedUnits }}
+        </text>
+
+        <image [attr.x]="halfDimension + 120  + 'px'"
+               [attr.y]="1.4 * meterDimension + 'px'"
+               width="70"
+               xlink:href="/assets/glyphs/cruise-control-glyph.svg"/>
+
+      </g>
+
+    </g>
+
+    <g id="debug" *ngIf="debug">
+      <line [attr.x1]="halfDimension + 'px'"
+            [attr.x2]="halfDimension + 'px'"
+            [attr.y1]="0"
+            [attr.y2]="meterDimension + 'px'"
+            class="debug"
+            stroke-opacity="0.5"
+            stroke="white"></line>
+
+      <line [attr.x1]="0"
+            [attr.x2]="meterDimension + 'px'"
+            [attr.y1]="halfDimension + 'px'"
+            [attr.y2]="halfDimension + 'px'"
+            class="debug"></line>
+
+      <line [attr.x1]="0"
+            [attr.x2]="meterDimension"
+            [attr.y1]="0"
+            [attr.y2]="meterDimension"
+            class="debug"></line>
+
+      <line [attr.x1]="meterDimension"
+            [attr.x2]="0"
+            [attr.y1]="0"
+            [attr.y2]="meterDimension"
+            class="debug"></line>
+    </g>
+
+
+  </svg>
+</div>

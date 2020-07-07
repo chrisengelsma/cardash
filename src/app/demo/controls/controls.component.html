@@ -1,0 +1,78 @@
+<form [formGroup]="form">
+  <div class="wrapper">
+    <div fxLayout="column" fxFlexFill style="padding: 10px;">
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">Debug guides</span>
+        <mat-checkbox formControlName="debug"
+                      fxFlex="50"
+                      (change)="updateDebug($event)"></mat-checkbox>
+        <span fxFlex></span>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">Tachometer</span>
+        <mat-slider formControlName="rpm"
+                    fxFlex="50"
+                    [min]="minRpm"
+                    [max]="maxRpm"
+                    (input)="updateRPMs($event)">
+        </mat-slider>
+        <span fxFlex>{{ rpm }}</span>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">PRNDL</span>
+        <mat-form-field fxFlex="50">
+          <mat-select formControlName="prndl">
+            <mat-option *ngFor="let prndl of prndlList"
+                        [value]="prndl"
+                        (onSelectionChange)="updatePRNDL($event)">
+              {{ prndl }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <span fxFlex></span>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">Speed</span>
+        <mat-slider formControlName="speed"
+                    fxFlex="50"
+                    [min]="0"
+                    [max]="maxSpeed"
+                    (input)="updateSpeed($event)">
+        </mat-slider>
+        <span fxFlex>{{ speed }}</span>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">Gear</span>
+        <mat-slider formControlName="rpm"
+                    fxFlex="50"
+                    [step]="1"
+                    [min]="1"
+                    [max]="8"
+                    (input)="updateGear($event)">
+        </mat-slider>
+        <span fxFlex>{{ gear }}</span>
+      </div>
+
+      <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+        <span fxFlex="20">Units</span>
+
+        <mat-radio-group fxFlex="50"
+                         fxLayoutGap="12px"
+                         (change)="updateUnits($event)"
+                         formControlName="units">
+          <mat-radio-button value="Imperial">Imperial</mat-radio-button>
+          <mat-radio-button value="Metric">Metric</mat-radio-button>
+        </mat-radio-group>
+
+        <span fxFlex></span>
+      </div>
+
+
+    </div>
+  </div>
+</form>

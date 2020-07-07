@@ -1,1 +1,29 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700,900&display=swap');
+
+@import "~@angular/material/theming";
+
+@include mat-core();
+
+@import "./styles/dark-theme";
+
+.dark-theme {
+  @include angular-material-theme($dark-theme);
+  @include mat-snack-bar-theme($dark-theme);
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  background-color: black;
+}
+
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit;
+}

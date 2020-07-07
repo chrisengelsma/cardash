@@ -1,0 +1,37 @@
+<div *ngIf="authenticated; then authBlock else loginBlock"></div>
+
+<ng-template #authBlock>
+  <div fxLayout="column"
+       style="display: block; height: 100%;"
+       fxLayoutGap="12px"
+       fxLayoutAlign="space-between stretch">
+
+    <div class="dash-wrapper dashed">
+      <app-dash></app-dash>
+    </div>
+
+    <app-controls></app-controls>
+  </div>
+</ng-template>
+<ng-template #loginBlock>
+  <div fxLayout="column"
+       style="display: block; height: 100%;"
+       fxLayoutGap="12px"
+       fxLayoutAlign="center center">
+
+    <form [formGroup]="form" novalidate fxLayout="column">
+
+      <mat-form-field>
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="user" type="text" autocomplete="off" (keyup.enter)="submit()"/>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="pass" type="password" autocomplete="off" (keyup.enter)="submit()"/>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="submit()">Login</button>
+    </form>
+  </div>
+</ng-template>
