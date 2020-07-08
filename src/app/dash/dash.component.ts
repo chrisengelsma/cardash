@@ -1,7 +1,5 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { DataService } from '../services/_services/data.service';
-import { IRpmZone, PrndlType, TireType, UnitsType } from '../models';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
+import { IRpmZone, PrndlType, UnitsType } from '../models';
 
 @Component({
   selector: 'app-dash',
@@ -14,28 +12,21 @@ export class DashComponent implements OnInit, OnDestroy {
   prndl: PrndlType = 'P';
   speed: number = 0;
   gear: number = 1;
-  units: UnitsType = 'Imperial';
+  tirePressure: number[] = [ 30, 30, 30, 30 ];
+  units: UnitsType = 'imperial';
   debug: boolean = false;
+  fuelLevel: number = 0;
 
   @Input() max: number = 7000;
-
   @Input() radius: number = 400;
-
   @Input() needleWidth: number = 10;
 
   mainTicks: number[] = [];
-
   midTicks: number[] = [];
-
   minorTicks: number[] = [];
-
   zones: IRpmZone[] = [];
 
-  tires: TireType[] = [ 'FrontLeft', 'FrontRight', 'RearLeft', 'RearRight' ];
-
-  private _subscriptions: Subscription[] = [];
-
-  constructor(private _dataService: DataService) {
+  constructor() {
   }
 
   get percent() {
@@ -69,8 +60,26 @@ export class DashComponent implements OnInit, OnDestroy {
   }
 
   get speedUnits() {
-    return ( this.units === 'Imperial' ) ? 'MPH' : 'KPH';
+    return this.isImperial ? 'MPH' : 'KPH';
   }
+
+  get isImperial() {
+    return ( this.units === 'imperial' );
+  }
+
+  @HostListener('window:rpm', [ '$event' ]) updateRpm(event) { this.rpm = Math.floor(Math.min(7000, event.detail)); }
+
+  @HostListener('window:speed', [ '$event' ]) updateSpeed(event) { this.speed = Math.floor(event.detail); }
+
+  @HostListener('window:prndl', [ '$event' ]) updatePRNDL(event) { this.prndl = event.detail; }
+
+  @HostListener('window:gear', [ '$event' ]) updateGear(event) { this.gear = Math.floor(event.detail); }
+
+  @HostListener('window:tirePressure', [ '$event' ]) updateTirePressure(event) { this.tirePressure = event.detail; }
+
+  @HostListener('window:units', [ '$event' ]) updateUnits(event) { this.units = event.detail; }
+
+  @HostListener('window:fuelLevel', [ '$event' ]) updateFuelLevel(event) { this.fuelLevel = event.detail; }
 
   tickRotation(value: number): string {
     const percent = 100 * value / this.max;
@@ -103,17 +112,9 @@ export class DashComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    for (const subscription of this._subscriptions) { subscription.unsubscribe(); }
   }
 
   ngOnInit(): void {
-    this._subscriptions.push(this._dataService.rpm$.subscribe(rpm => this.rpm = rpm));
-    this._subscriptions.push(this._dataService.prndl$.subscribe(prndl => this.prndl = prndl));
-    this._subscriptions.push(this._dataService.speed$.subscribe(speed => this.speed = speed));
-    this._subscriptions.push(this._dataService.gear$.subscribe(gear => this.gear = gear));
-    this._subscriptions.push(this._dataService.units$.subscribe(units => this.units = units));
-    this._subscriptions.push(this._dataService.debug$.subscribe(debug => this.debug = debug));
-
     this.populateZones();
     this.populateTicks();
   }

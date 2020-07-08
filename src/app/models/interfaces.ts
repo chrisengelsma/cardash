@@ -1,27 +1,34 @@
-import { PrndlType, UnitsType } from './types';
+import { PrimaryTabItemType, PrndlType, UnitsType } from './types';
 
-export interface IDashboardData {
-  debug?: boolean;
-  tirePressure?: number[];
-  tireStatus?: string;
-  oilPressure?: number;
-  oilTemperature?: number;
-  mileage?: number;
-  gear?: number;
-  prndl?: PrndlType;
-  rpm?: number;
+export interface ITrip {
+  distance?: number;
   speed?: number;
-  units?: UnitsType;
-  fuel?: number;
-  milesRemaining?: number;
+  fuelEconomy?: number;
 }
 
 export interface IRpmZone {
-  color: string;
-  low: number;
-  outlineColor: string;
+  color?: string;
+  low?: number;
+  outlineColor?: string;
 }
 
 declare global {
-  interface Window { Dashboard: any; }
+  interface Window {
+    rpm?: number;
+    prndl?: PrndlType;
+    gear?: number;
+    speed?: number;
+    units?: UnitsType;
+    fuelLevel?: number;
+    temp?: number;
+    tirePressure?: number[];
+    totalMileage?: number;
+    oilPressure?: number;
+    selectedPrimaryTab?: PrimaryTabItemType;
+    selectedSecondaryTab?: string;
+    tripComputer?: {
+      trip1?: ITrip;
+      trip2?: ITrip;
+    };
+  }
 }

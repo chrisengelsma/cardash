@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashComponent } from './dash.component';
-import { AppServiceModule } from '../services/app.service.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +12,6 @@ import { AppServiceModule } from '../services/app.service.module';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
-    AppServiceModule,
   ],
   providers: [
     { provide: 'Window', useValue: window }

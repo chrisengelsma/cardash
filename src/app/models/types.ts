@@ -1,5 +1,11 @@
 export type PrndlType = | 'P' | 'R' | 'N' | 'D' | 'L';
 
-export type UnitsType = | 'Imperial' | 'Metric';
+export type UnitsType = | 'imperial' | 'metric';
 
-export type TireType = | 'FrontLeft' | 'FrontRight' | 'RearLeft' | 'RearRight';
+export type PrimaryTabItemType =
+  | 'Trip Computer'
+  | 'Performance'
+  | 'Audio'
+  | 'Maintenance'
+  | 'Options'
+  | 'Simplify';

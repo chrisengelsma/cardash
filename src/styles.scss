@@ -11,6 +11,11 @@
   @include mat-snack-bar-theme($dark-theme);
 }
 
+@font-face {
+  font-family: 'From The Stars';
+  src: url('./assets/fonts/FromtheStarsBk-Italic.otf') format('opentype');
+}
+
 html, body {
   height: 100%;
   width: 100%;

@@ -10,7 +10,6 @@ import { DemoComponent } from './demo.component';
 import { MatSliderModule } from '@angular/material/slider';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '../material-module';
-import { AppServiceModule } from '../services/app.service.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
@@ -23,7 +22,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DashModule,
     BrowserModule,
     BrowserAnimationsModule,
-    AppServiceModule,
     FlexLayoutModule,
     MaterialModule,
     RouterModule.forRoot(AppDemoRoutes),
