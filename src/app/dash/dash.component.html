@@ -2,13 +2,9 @@
 
   <svg id="dashboard"
        [attr.viewBox]="'0 0 ' + meterDimension + ' ' + meterDimension"
-       [ngClass]="debug ? 'debug': ''"
        preserveAspectRatio="xMidYMid slice">
 
     <defs>
-      <style
-        type="text/css">@import url('https://fonts.googleapis.com/css?family=Lato|Open+Sans|Oswald|Raleway|Roboto|Indie+Flower|Gamja+Flower');</style>
-
       <linearGradient id="linearGradient" x1="0%" y1="100%" x2="0%" y2="0%">
         <stop offset="0%" stop-color="#fff"/>
         <stop offset="100%" stop-color="#ccc"/>
@@ -21,6 +17,340 @@
              xlink:href="./assets/glyphs/dash-outline.svg"/>
     </g>
 
+    <g id="misc">
+      <!-- MILES -->
+      <text [attr.x]="this.halfDimension / 5 + 15"
+            [attr.y]="2 * this.meterDimension / 3 - 25"
+            class="right-anchor" >
+        <tspan font-size="12pt" [attr.fill]="colors.white">{{ totalMileage }}</tspan>
+        <tspan font-size="10pt" [attr.fill]="colors.gray" class="words">&nbsp;{{ distanceUnits }}</tspan>
+      </text>
+    </g>
+
+    <!-- RIGHT BUMPER -->
+    <g id="rightBumper" style="transform-origin: center center;">
+
+      <g id="fuelDistance">
+        <text fill="white"
+              class="right-anchor"
+              [attr.x]="4 * meterDimension / 5 + 30"
+              [attr.y]="2 * meterDimension / 3 - 2" >
+          <tspan [attr.fill]="colors.white" font-size="12pt">{{ fuelDistance }}</tspan>
+          <tspan [attr.fill]="colors.gray" font-size="8pt" class="words">&nbsp;{{ distanceUnits }}</tspan>
+        </text>
+      </g>
+
+      <!-- Fuel Level Meter -->
+      <g id="fuelLevel">
+
+        <line *ngFor="let i of fuelBarTicks"
+              [attr.x1]="fuelLevelX(i)"
+              [attr.y1]="fuelBarTickY0"
+              [attr.x2]="fuelLevelX(i)"
+              [attr.y2]="fuelBarTickY1"
+              stroke="white"
+              stroke-width="2"/>
+
+        <line [attr.x1]="fuelLevelX(100) + 1"
+              [attr.y1]="fuelBarTickY0 + 7"
+              [attr.x2]="fuelLevelX(0) - 1"
+              [attr.y2]="fuelBarTickY0 + 7"
+              stroke="lightgray"
+              stroke-width="3"/>
+
+        <!-- The main line -->
+        <line [attr.x1]="fuelLevelX(fuelLevel) "
+              [attr.y1]="fuelBarTickY0 + 6"
+              [attr.x2]="fuelLevelX(0) "
+              [attr.y2]="fuelBarTickY0 + 6"
+              stroke="white"
+              stroke-width="6"/>
+
+        <!-- The left red bar -->
+        <line [attr.x1]="fuelLevelX(0)"
+              [attr.y1]="fuelBarTickY0 - 2"
+              [attr.x2]="fuelLevelX(0)"
+              [attr.y2]="fuelBarTickY0 + 14"
+              stroke="#fc0f3c"
+              stroke-width="2"/>
+
+        <!-- The right red bar -->
+        <line [attr.x1]="fuelLevelX(fuelLevel)"
+              [attr.y1]="fuelBarTickY0 - 2"
+              [attr.x2]="fuelLevelX(fuelLevel)"
+              [attr.y2]="fuelBarTickY0 + 14"
+              stroke="#fc0f3c"
+              stroke-width="2"/>
+
+      </g>
+    </g>
+
+    <!-- LEFT BUMPER -->
+    <g id="leftBumper" style="transform-origin: center center">
+      <g id="oilTemp">
+
+        <!-- OIL TEMPERATURE -->
+        <text fill="white"
+              class="left-anchor"
+              [attr.x]="meterDimension / 7"
+              [attr.y]="2 * meterDimension / 3 - 3"
+              font-size="12pt">
+          {{ oilTemp }}
+        </text>
+
+        <text fill="white"
+              class="left-anchor"
+              fill-opacity="0.5"
+              font-size="8pt"
+              [attr.x]="meterDimension / 7 + 35"
+              [attr.y]="2 * meterDimension / 3 - 2">
+          &deg;{{ tempUnits }}
+        </text>
+
+      </g>
+
+      <g id="oilTempGauge">
+
+        <!-- Tick Marks -->
+        <line *ngFor="let i of oilTempTickValues"
+              [attr.x1]="oilTempBarX(i)"
+              [attr.y1]="fuelBarTickY0"
+              [attr.x2]="oilTempBarX(i)"
+              [attr.y2]="fuelBarTickY1"
+              stroke="white"
+              stroke-width="2"/>
+
+        <!-- Back bar -->
+        <line [attr.x1]="oilTempBarX(oilTempMax)"
+              [attr.y1]="fuelBarTickY0 + 7"
+              [attr.x2]="oilTempBarX(oilTempMin)"
+              [attr.y2]="fuelBarTickY0 + 7"
+              stroke="lightgray"
+              stroke-width="4"/>
+
+        <!-- Oil temp danger-zone back bar -->
+        <line [attr.x1]="oilTempBarX(oilTempMax)"
+              [attr.y1]="fuelBarTickY0 + 7"
+              [attr.x2]="oilTempBarX(oilTempDanger)"
+              [attr.y2]="fuelBarTickY0 + 7"
+              stroke-opacity="0.5"
+              stroke="#fc0f3c"
+              stroke-width="4"/>
+
+        <!-- The main line -->
+        <line [attr.x1]="oilTempBarX(oilTemp) "
+              [attr.y1]="fuelBarTickY0 + 6"
+              [attr.x2]="oilTempBarX(oilTempMin) "
+              [attr.y2]="fuelBarTickY0 + 6"
+              stroke="white"
+              stroke-width="6"/>
+
+        <!-- The right red bar -->
+        <line [attr.x1]="oilTempBarX(oilTempMax)"
+              [attr.y1]="fuelBarTickY0 - 2"
+              [attr.x2]="oilTempBarX(oilTempMax)"
+              [attr.y2]="fuelBarTickY0 + 14"
+              stroke="#fc0f3c"
+              stroke-width="2"/>
+
+        <!-- The right red bar -->
+        <line [attr.x1]="oilTempBarX(oilTemp)"
+              [attr.y1]="fuelBarTickY0 - 2"
+              [attr.x2]="oilTempBarX(oilTemp)"
+              [attr.y2]="fuelBarTickY0 + 14"
+              stroke="#fc0f3c"
+              stroke-width="2"/>
+
+      </g>
+    </g>
+
+    <!-- SECONDARY (LEFT) TAB -->
+    <g id="secondaryTab" style="transform-origin: center center">
+
+      <g id="oilPressure">
+        <text id="oilPressureLabel"
+              [attr.x]="halfDimension / 3"
+              [attr.y]="15 * halfDimension / 14"
+              class="left-anchor words"
+              font-size="12pt"
+              fill-opacity="0.7"
+              [attr.fill]="colors.red1">
+          Oil Pressure
+        </text>
+
+        <!-- Underline -->
+        <line [attr.x1]="halfDimension / 6 - 20"
+              [attr.y1]="15 * halfDimension / 14 + 10"
+              [attr.x2]="2 * halfDimension / 3 + 2"
+              [attr.y2]="15 * halfDimension / 14 + 10"
+              stroke-width="0.5"
+              stroke-opacity="0.5"
+              stroke="white"/>
+
+        <text id="oilPressureLabel"
+              [attr.x]="halfDimension / 3"
+              [attr.y]="4 * meterDimension / 7"
+              font-size="18pt"
+              [attr.fill]="colors.white"
+              class="left-anchor">
+          <tspan font-size="18pt">{{ oilPressure }}</tspan>
+          <tspan font-size="12pt">&nbsp;psi</tspan>
+        </text>
+
+        <g id="oilPressureBar">
+
+          <!-- Oil pressure gauge back bar -->
+          <line [attr.x1]="oilPressureBarX(oilPressureMin)"
+                [attr.x2]="oilPressureBarX(oilPressureMax)"
+                [attr.y1]="oilPressureBarY0"
+                [attr.y2]="oilPressureBarY0"
+                stroke-width="6"
+                stroke-opacity="0.5"
+                [attr.stroke]="colors.gray"/>
+
+          <!-- Moving bar -->
+          <line [attr.x1]="oilPressureBarX(oilPressureMin)"
+                [attr.x2]="oilPressureBarX(oilPressure)"
+                [attr.y1]="oilPressureBarY0"
+                [attr.y2]="oilPressureBarY0"
+                stroke-width="6"
+                [attr.stroke]="colors.white"/>
+
+          <!-- Moving red marker -->
+          <line [attr.x1]="oilPressureBarX(oilPressure)"
+                [attr.x2]="oilPressureBarX(oilPressure)"
+                [attr.y1]="oilPressureBarY0 - 5"
+                [attr.y2]="oilPressureBarY0 + 5"
+                stroke-width="2"
+                [attr.stroke]="colors.red1"/>
+
+          <!-- Moving red marker -->
+          <line [attr.x1]="oilPressureBarX(oilPressureMin)"
+                [attr.x2]="oilPressureBarX(min(oilPressureDanger, oilPressure))"
+                [attr.y1]="oilPressureBarY0"
+                [attr.y2]="oilPressureBarY0"
+                stroke-width="6"
+                [attr.stroke]="colors.red1"/>
+
+          <text [attr.x]="oilPressureBarX(oilPressureMin)"
+                [attr.y]="oilPressureBarY0 + 15"
+                [attr.fill]="colors.white">
+            {{ oilPressureMin }}
+          </text>
+
+          <text [attr.x]="oilPressureBarX(oilPressureMax)"
+                [attr.y]="oilPressureBarY0 + 15"
+                [attr.fill]="colors.white">
+            {{ oilPressureMax }}
+          </text>
+        </g>
+      </g>
+
+      <g id="tireStatus">
+        <text [attr.x]="halfDimension / 3"
+              [attr.y]="5 * halfDimension / 6"
+              class="left-anchor words"
+              font-size="12pt"
+              fill-opacity="0.7"
+              [attr.fill]="colors.red1">
+          Tire Status
+        </text>
+
+        <!-- Underline -->
+        <line [attr.x1]="halfDimension / 6 "
+              [attr.y1]="5 * halfDimension / 6 + 10"
+              [attr.x2]="2 * halfDimension / 3 + 5"
+              [attr.y2]="5 * halfDimension / 6 + 10"
+              stroke-width="0.5"
+              stroke-opacity="0.5"
+              stroke="white"/>
+
+        <!-- Tire axles -->
+        <g id="tireAxles">
+          <line id="frontAxle"
+                [attr.x1]="tireXY(0).x + tireWidth / 2"
+                [attr.y1]="tireXY(0).y + tireHeight / 2"
+                [attr.x2]="tireXY(3).x + tireWidth / 2"
+                [attr.y2]="tireXY(3).y + tireHeight / 2"
+                [attr.stroke]="colors.gray"
+                stroke-width="4"/>
+
+          <line id="rearAxle"
+                [attr.x1]="tireXY(1).x + tireWidth / 2"
+                [attr.y1]="tireXY(1).y + tireHeight / 2"
+                [attr.x2]="tireXY(2).x + tireWidth / 2"
+                [attr.y2]="tireXY(2).y + tireHeight / 2"
+                [attr.stroke]="colors.gray"
+                stroke-width="4"/>
+
+          <!--          <line id="driveShaft"-->
+          <!--                [attr.x1]="(tireXY(3).x + tireXY(0).x) / 2 + (tireWidth / 2)"-->
+          <!--                [attr.y1]="tireXY(0).y + tireHeight / 2"-->
+          <!--                [attr.x2]="(tireXY(3).x + tireXY(0).x) / 2 + (tireWidth / 2)"-->
+          <!--                [attr.y2]="tireXY(1).y + tireHeight / 2"-->
+          <!--                [attr.stroke]="colors.gray"-->
+          <!--                stroke-width="4"/>-->
+
+          <circle id="frontDifferential"
+                  [attr.cx]="(tireXY(3).x + tireXY(0).x) / 2 + (tireWidth / 2)"
+                  [attr.cy]="tireXY(0).y + tireHeight / 2"
+                  [attr.r]="5"
+                  [attr.fill]="colors.gray"></circle>
+
+          <circle id="rearDifferential"
+                  [attr.cx]="(tireXY(3).x + tireXY(0).x) / 2 + (tireWidth / 2)"
+                  [attr.cy]="tireXY(1).y + tireHeight / 2"
+                  [attr.r]="5"
+                  [attr.fill]="colors.gray"></circle>
+
+          <text [attr.x]="(tireXY(3).x + tireXY(0).x) / 2 + (tireWidth / 2)"
+                [attr.y]="(tireXY(0).y + tireXY(1).y) / 2 + (tireHeight / 2)"
+                font-size="10pt"
+                [attr.fill]="colors.white">
+            psi
+          </text>
+
+        </g>
+
+        <!-- For each tire... -->
+        <!-- 0  []--o--[]  3 -->
+        <!--        |       -->
+        <!-- 1  []--o--[]  2 -->
+        <g id="tirePressures" *ngFor="let _ of [0, 1, 2, 3]; let i = index;">
+
+          <g [id]="'tire' + i"
+             [ngClass]="{ 'tire-warning': tirePressure[i] < tireDangerLow }">
+            <rect [attr.x]="tireXY(i).x"
+                  [attr.y]="tireXY(i).y"
+                  [attr.width]="tireWidth"
+                  [attr.height]="tireHeight"
+                  [attr.fill]="tireStatusColor(i)"></rect>
+
+            <rect [attr.x]="tireXY(i).x + tireWidth / 4"
+                  [attr.y]="tireXY(i).y + tireHeight / 4"
+                  [attr.width]="tireWidth / 2"
+                  [attr.height]="tireHeight / 2"
+                  fill-opacity="0.5"
+                  [attr.fill]="colors.white"></rect>
+          </g>
+
+          <!-- Tire pressure labels -->
+          <text [attr.fill]="colors.white"
+                font-size="12pt"
+                [ngClass]="
+                 { 'right-anchor': i < 2,
+                   'left-anchor': i >= 2 } "
+
+                [attr.x]="tireXY(i).x + ((i < 2) ?  -10 : 15)"
+                [attr.y]="tireXY(i).y + tireHeight / 2">
+            {{ tirePressure[i] }}
+          </text>
+        </g>
+      </g>
+
+    </g>
+
+    <!-- TACHOMETER -->
     <g id="tachometer" style="transform-origin: center center;" transform="scale(0.33)">
 
       <g id="rpm"
@@ -35,7 +365,7 @@
                   class="circle outline"
                   cx="50%"
                   cy="50%"
-                  [attr.r]="radius + 34"
+                  [attr.r]="tachRadius + 34"
                   [attr.stroke]="zone.outlineColor"
                   [attr.stroke-dasharray]="zoneRadiusCf(1.085, zone.low)">
           </circle>
@@ -47,7 +377,7 @@
                   cy="50%"
                   [attr.stroke]="zone.color"
                   [attr.stroke-dasharray]="zoneDashArray(zone.low)"
-                  [attr.r]="radius"></circle>
+                  [attr.r]="tachRadius"></circle>
 
         </g>
 
@@ -55,7 +385,7 @@
           <circle cx="50%"
                   cy="50%"
                   class="circle mask"
-                  [attr.r]="radius"
+                  [attr.r]="tachRadius"
                   [attr.stroke]="'url(#linearGradient)'"
                   [attr.stroke-dasharray]="maskDashArray"></circle>
         </g>
@@ -63,6 +393,7 @@
         <g id="concentricCircles">
           <circle class="circle"
                   r="18%"
+                  stroke-width="0.5"
                   stroke-opacity="0.5"
                   stroke="white"
                   cx="50%"
@@ -71,6 +402,7 @@
 
           <circle class="circle"
                   r="21%"
+                  stroke-width="0.5"
                   stroke-opacity="0.5"
                   stroke="white"
                   [attr.stroke-dasharray]="radiusCf(0.47)"
@@ -79,6 +411,7 @@
 
           <circle class="circle"
                   r="24%"
+                  stroke-width="0.5"
                   stroke-opacity="0.5"
                   stroke="white"
                   [attr.stroke-dasharray]="radiusCf(0.536)"
@@ -87,6 +420,7 @@
 
           <circle class="circle"
                   r="27%"
+                  stroke-width="0.5"
                   stroke-opacity="0.5"
                   stroke="white"
                   [attr.stroke-dasharray]="radiusCf(.605)"
@@ -100,10 +434,10 @@
           <line *ngFor="let tick of midTicks"
                 class="main-tick"
                 stroke-width="8"
-                [attr.x1]="halfDimension + 'px'"
-                [attr.x2]="halfDimension + 'px'"
-                [attr.y1]="0.61 * meterDimension  + 'px'"
-                [attr.y2]="0.6 * meterDimension + 'px'"
+                [attr.x1]="halfDimension"
+                [attr.x2]="halfDimension"
+                [attr.y1]="0.61 * meterDimension "
+                [attr.y2]="0.6 * meterDimension"
                 [style.transform]="tickRotation(tick)"
                 stroke-linecap="round"
                 stroke-opacity="0.5"
@@ -112,10 +446,10 @@
           <line *ngFor="let tick of minorTicks"
                 class="main-tick"
                 stroke-width="8"
-                [attr.x1]="halfDimension + 'px'"
-                [attr.x2]="halfDimension + 'px'"
-                [attr.y1]="0.6 * meterDimension  + 'px'"
-                [attr.y2]="0.6 * meterDimension + 'px'"
+                [attr.x1]="halfDimension"
+                [attr.x2]="halfDimension"
+                [attr.y1]="0.6 * meterDimension "
+                [attr.y2]="0.6 * meterDimension"
                 [style.transform]="tickRotation(tick)"
                 stroke-linecap="round"
                 stroke-opacity="0.5"
@@ -125,18 +459,18 @@
                 class="tick-labels middle-anchor"
                 font-size="48pt"
                 [attr.fill]="mainTickColor(tick)"
-                [attr.x]="halfDimension"
-                [attr.y]="meterDimension"
+                [attr.x]="halfDimension - 3"
+                [attr.y]="meterDimension + 2"
                 [style.transform]="tickLabelPosition(tick)">{{ tick / 1000 }}</text>
 
 
           <line *ngFor="let tick of mainTicks"
                 class="main-tick"
                 stroke-width="10"
-                [attr.x1]="halfDimension + 'px'"
-                [attr.x2]="halfDimension + 'px'"
-                [attr.y1]="0.63 * meterDimension  + 'px'"
-                [attr.y2]="0.59 * meterDimension + 'px'"
+                [attr.x1]="halfDimension"
+                [attr.x2]="halfDimension"
+                [attr.y1]="0.63 * meterDimension "
+                [attr.y2]="0.59 * meterDimension"
                 [style.transform]="tickRotation(tick)"
                 [style.stroke]="mainTickColor(tick)"></line>
 
@@ -146,83 +480,67 @@
 
           <line id="needle"
                 [attr.stroke-width]="needleWidth"
-                [attr.x1]="halfDimension + 'px'"
-                [attr.x2]="halfDimension + 'px'"
-                [attr.y1]="0.530 * meterDimension + 'px'"
-                [attr.y2]="0.815 * meterDimension + 'px'"
+                [attr.x1]="halfDimension"
+                [attr.x2]="halfDimension"
+                [attr.y1]="0.530 * meterDimension"
+                [attr.y2]="0.815 * meterDimension"
                 [style.transform]="needleRotation"
                 stroke-linecap="round"
                 stroke="red"></line>
         </g>
       </g>
 
-      <g id="labels" [attr.transform]="'translate(0, ' + -halfDimension + ')'">
+      <g id="tachometerLabels" [attr.transform]="'translate(0, ' + -halfDimension + ')'">
 
-        <text [attr.x]="isInDrive ? halfDimension - 30 + 'px': halfDimension + 'px'"
-              class="middle-anchor"
-              [attr.y]="meterDimension + 20 + 'px'"
+        <text [attr.x]="isInDrive ? halfDimension - 30 : halfDimension"
+              class="middle-anchor words"
+              [attr.y]="meterDimension + 20"
               fill="white"
               font-size="140pt">{{ prndl }}</text>
 
         <text *ngIf="isInDrive"
-              class="middle-anchor"
-              [attr.x]="70 + halfDimension + 'px'"
-              [attr.y]="meterDimension + 20 + 'px'"
+              class="middle-anchor words"
+              [attr.x]="70 + halfDimension"
+              [attr.y]="meterDimension + 20"
               fill="white"
               font-size="70pt">{{ gear }}</text>
 
-        <text [attr.x]="4 * halfDimension / 3 + 'px'"
-              [attr.y]="5 * meterDimension / 4 + 'px'"
+        <text [attr.x]="4 * halfDimension / 3 - 10"
+              [attr.y]="5 * meterDimension / 4"
               class="left-anchor"
               fill="white"
               font-size="120pt">{{ speed }}</text>
 
-        <text [attr.y]="meterDimension + 50 + 'px'"
+        <text [attr.y]="meterDimension + 50"
               class="right-anchor"
               fill="white"
               fill-opacity="0.5"
               font-size="30pt">
-          <tspan [attr.x]="meterDimension - 30">RPM</tspan>
-          <tspan [attr.x]="meterDimension - 30" font-size="24pt" dy="30">/1000</tspan>
+          <tspan [attr.x]="meterDimension - 30" font-size="30pt">RPM</tspan>
+          <tspan [attr.x]="meterDimension - 30" font-size="22pt" dy="30">/1000</tspan>
         </text>
 
-        <image [attr.x]="40 + 2 * meterDimension / 3 + 'px'"
-               [attr.y]="1.32 *  meterDimension  + 'px'"
+        <image [attr.x]="40 + 2 * meterDimension / 3"
+               [attr.y]="1.32 *  meterDimension "
                width="70"
                xlink:href="./assets/glyphs/tachometer-glyph.svg"/>
 
         <text class="left-anchor"
-              [attr.x]="120 + 2 * meterDimension / 3 + 'px'"
-              [attr.y]="30 + 1.32 * meterDimension + 'px'"
+              [attr.x]="120 + 2 * meterDimension / 3"
+              [attr.y]="30 + 1.32 * meterDimension"
               fill="white"
               font-size="30pt">
           {{ speedUnits }}
         </text>
 
-        <image [attr.x]="halfDimension + 120  + 'px'"
-               [attr.y]="1.4 * meterDimension + 'px'"
+        <image [attr.x]="halfDimension + 100 "
+               [attr.y]="1.4 * meterDimension"
                width="70"
                xlink:href="./assets/glyphs/cruise-control-glyph.svg"/>
 
       </g>
 
-      <!--
-      <g id="tireStatus" style="transform-origin: center center;">
-        <text [attr.x]="-2 * halfDimension / 3 + 'px'"
-              [attr.y]="halfDimension / 2 + 'px'"
-              class="middle-anchor"
-              font-size="36pt"
-              fill="red">
-          Tire Status
-        </text>
 
-        <g id="tirePressures" *ngFor="let tire of tires; let i = index;">
-          <rect [attr.x]="-2 * halfDimension / 3 + (i % 2) * 60"
-                [attr.y]="halfDimension / 2 + (i % 3) * 80"
-                width="20" height="40" fill="green"></rect>
-        </g>
-      </g>
-      -->
     </g>
 
   </svg>

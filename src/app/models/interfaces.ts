@@ -20,7 +20,9 @@ declare global {
     speed?: number;
     units?: UnitsType;
     fuelLevel?: number;
-    temp?: number;
+    fuelDistance?: number;
+    oilTemp?: number;
+    outsideTemp?: number;
     tirePressure?: number[];
     totalMileage?: number;
     oilPressure?: number;
