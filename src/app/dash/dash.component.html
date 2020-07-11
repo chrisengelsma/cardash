@@ -27,7 +27,7 @@
              xlink:href="./assets/glyphs/dash-outline.svg"/>
     </g>
 
-    <g id="misc">
+    <g id="indicators">
       <!-- MILES -->
       <text [attr.x]="this.halfDimension / 5 + 15"
             [attr.y]="2 * this.meterDimension / 3 - 25"
@@ -35,6 +35,49 @@
         <tspan font-size="12pt" [attr.fill]="colors.white">{{ totalMileage }}</tspan>
         <tspan font-size="10pt" [attr.fill]="colors.gray" class="words">&nbsp;{{ distanceUnits }}</tspan>
       </text>
+
+      <!-- COMPASS -->
+      <text [attr.x]="11 * this.meterDimension / 12"
+            [attr.y]="2 * this.meterDimension / 3 - 25"
+            [attr.fill]="colors.white"
+            font-size="12pt"
+            class="left-anchor">
+        {{ compass }}
+      </text>
+
+      <g id="topLeftIndicators"
+         [style.transform]="'translateX(' +  (2 * halfDimension / 6 + 10) + 'px) translateY(' + indicatorY0 + 'px)'">
+<!--        <rect x="0"-->
+<!--              y="0"-->
+<!--              [attr.width]="indicatorWidth"-->
+<!--              [attr.height]="indicatorHeight"-->
+<!--              fill="yellow"-->
+<!--              fill-opacity="0.5"></rect>-->
+        <image *ngIf="leftIndicator"
+               [ngClass]="{ 'blinker': leftIndicator }"
+               [attr.x]="indicatorWidth - 20"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/arrow-left.svg"/>
+      </g>
+
+      <g id="topRightIndicators"
+         [style.transform]="'translateX(' + 6 * halfDimension / 5 + 'px) translateY(' + indicatorY0 + 'px)'">
+<!--        <rect x="0"-->
+<!--              y="0"-->
+<!--              [attr.width]="indicatorWidth"-->
+<!--              [attr.height]="indicatorHeight"-->
+<!--              fill="yellow"-->
+<!--              fill-opacity="0.5"></rect>-->
+
+        <image *ngIf="rightIndicator"
+               [ngClass]="{ 'blinker': rightIndicator }"
+               [attr.x]="10"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/arrow-right.svg"/>
+      </g>
+
     </g>
 
     <!-- RIGHT BUMPER -->
@@ -181,7 +224,7 @@
         <image [attr.x]="4 * halfDimension / 3 + 40"
                [attr.y]="menuY0 - 30 "
                width="15"
-               xlink:href="./assets/glyphs/info-glyph.svg"/>
+               [attr.xlink:href]="menuIcons[selectedPrimaryTabIndex]"/>
 
         <text class="left-anchor words"
               [attr.x]="4 * halfDimension / 3 + 70"

@@ -26,6 +26,13 @@ export class DemoComponent implements OnInit {
     { key: 'selectedPrimaryTab', default_: 'Trip Computer' },
     { key: 'selectedSecondaryTab', default_: 'Trip 1' },
     { key: 'tripComputer', default_: 0 },
+    { key: 'compass', default_: 'N' },
+    { key: 'externalLamp', default_: false },
+    { key: 'headlamp', default_: false },
+    { key: 'autoHeadlamp', default_: false },
+    { key: 'highBeam', default_: false },
+    { key: 'leftIndicator', default_: false },
+    { key: 'rightIndicator', default_: false },
   ];
 
   authenticated: boolean = false;

@@ -1,5 +1,7 @@
 import { Component, HostListener, OnInit } from '@angular/core';
-import { IRpmZone, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsType } from '../models';
+import { CardinalDirectionType, IMenuOption, IRpmZone, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsType } from '../models';
+
+export function int(v: number): number { return Math.floor(v); }
 
 @Component({
   selector: 'app-dash',
@@ -9,7 +11,9 @@ import { IRpmZone, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsTyp
 export class DashComponent implements OnInit {
   refreshRate = 1000 / 60;
 
-  // The values
+  ////////////////////////////////////////////////////////////////////////////
+  // Window objects
+
   rpm: number = 0;
   prndl: PrndlType = 'P';
   speed: number = 0;
@@ -22,16 +26,29 @@ export class DashComponent implements OnInit {
   oilPressure: number = 28;
   outsideTemp: number = 75;
   totalMileage: number = 0;
+  externalLamp: boolean = false;
+  headlamp: boolean = false;
+  autoHeadlamp: boolean = false;
+  highBeam: boolean = false;
+  leftIndicator: boolean = false;
+  rightIndicator: boolean = false;
+  compass: CardinalDirectionType = 'N';
   secondaryTabs: object = {
     tripComputer: {}
   };
   selectedPrimaryTab: PrimaryTabItemType = 'Trip Computer';
   selectedSecondaryTab: SecondaryTabItemType = 'Trip 1';
 
+  ////////////////////////////////////////////////////////////////////////////
+  // Menu indices
+
   selectedPrimaryTabIndex: number = 0;
   previousPrimaryTabIndex: number = 0;
   selectedSecondaryTabIndex: number = 0;
   previousSecondaryTabIndex: number = 0;
+
+  ////////////////////////////////////////////////////////////////////////////
+  // Colors
 
   colors: { [key: string]: string } = {
     white: '#ffffff',
@@ -45,6 +62,17 @@ export class DashComponent implements OnInit {
     red2: '#ee5769',
     green1: '#69bd8a'
   };
+
+  menuIcons: string[] = [
+    './assets/glyphs/info-circle.svg',
+    './assets/glyphs/tachometer-alt.svg',
+    './assets/glyphs/music.svg',
+    './assets/glyphs/wrench.svg',
+    './assets/glyphs/list.svg',
+    '',
+  ];
+  ////////////////////////////////////////////////////////////////////////////
+  // Relative Measurements and Restrictions
 
   leftPeripheralSectionWidth: number = 250;
   leftPeripheralSectionHeight: number = 100;
@@ -84,7 +112,13 @@ export class DashComponent implements OnInit {
   menuHeight: number = 160;
   _menuScroll: number = 0;
 
-  menu: any[] = [
+  indicatorWidth: number = 200;
+  indicatorHeight: number = 30;
+
+  ////////////////////////////////////////////////////////////////////////////
+  // The menu layout
+
+  menu: IMenuOption[] = [
     {
       primary: 'Trip Computer',
       key: 'tripComputer',
@@ -112,27 +146,27 @@ export class DashComponent implements OnInit {
     {
       primary: 'Performance',
       key: 'performance',
-      secondary: [ 'None' ]
+      secondary: []
     },
     {
       primary: 'Audio',
       key: 'audio',
-      secondary: [ 'None' ]
+      secondary: []
     },
     {
       primary: 'Maintenance',
       key: 'maintenance',
-      secondary: [ 'None' ]
+      secondary: []
     },
     {
       primary: 'Options',
       key: 'options',
-      secondary: [ 'None' ]
+      secondary: []
     },
     {
       primary: 'Simplify',
       key: 'simplify',
-      secondary: [ 'None' ]
+      secondary: []
     }
   ];
   secondaryTabProgress: number = 0;
@@ -174,6 +208,8 @@ export class DashComponent implements OnInit {
     return `0, ${ this.semiCf - meterValue }, ${ meterValue }, ${ this.cf - this.semiCf }`;
   }
 
+  get indicatorY0() { return this.meterDimension / 3; }
+
   get cf() { return 2 * Math.PI * this.tachRadius; }
 
   get semiCf() { return 3 * this.cf / 4.0; }
@@ -204,9 +240,9 @@ export class DashComponent implements OnInit {
 
   get bottomLeftPeripheralY0() { return this.topLeftPeripheralY0 + this.leftPeripheralSectionHeight + 2; }
 
-  toHours(min: number) { return Math.floor(min / 60); }
+  toHours(min: number) { return int(min / 60); }
 
-  toMinuteOfHour(min: number) { return Math.floor(min % 60); }
+  toMinuteOfHour(min: number) { return int(min % 60); }
 
   tabRows(i: number): any[] {
     return this.activeTabSections[i].rows;
@@ -257,7 +293,7 @@ export class DashComponent implements OnInit {
 
     const j = ( i < 2 ) ? i % 2 : ( i + 1 ) % 2;
 
-    const x = -20 + x0 + Math.floor(i / 2) * dx;
+    const x = -20 + x0 + int(i / 2) * dx;
     const y = 20 + y0 + j * dy;
 
     return { x, y };
@@ -309,33 +345,48 @@ export class DashComponent implements OnInit {
     this.menuScroll = 0;
   }
 
-  @HostListener('window:rpm', [ '$event' ]) updateRpm(event) { this.rpm = Math.floor(Math.min(7000, event.detail)); }
+  @HostListener('window:rpm', [ '$event' ]) updateRpm(event) { this.rpm = int(Math.min(7000, event.detail)); }
 
-  @HostListener('window:speed', [ '$event' ]) updateSpeed(event) { this.speed = Math.floor(event.detail); }
+  @HostListener('window:speed', [ '$event' ]) updateSpeed(event) { this.speed = int(event.detail); }
 
   @HostListener('window:prndl', [ '$event' ]) updatePRNDL(event) { this.prndl = event.detail; }
 
-  @HostListener('window:gear', [ '$event' ]) updateGear(event) { this.gear = Math.floor(event.detail); }
+  @HostListener('window:gear', [ '$event' ]) updateGear(event) { this.gear = int(event.detail); }
 
-  @HostListener('window:tirePressure', [ '$event' ]) updateTirePressure(event) { this.tirePressure = event.detail; }
+  @HostListener('window:tirePressure', [ '$event' ]) updateTirePressure(event) { this.tirePressure = event.detail.map(x => int(x)); }
 
   @HostListener('window:units', [ '$event' ]) updateUnits(event) { this.units = event.detail; }
 
-  @HostListener('window:fuelLevel', [ '$event' ]) updateFuelLevel(event) { this.fuelLevel = event.detail; }
+  @HostListener('window:fuelLevel', [ '$event' ]) updateFuelLevel(event) { this.fuelLevel = int(event.detail); }
 
-  @HostListener('window:fuelDistance', [ '$event' ]) updateFuelDistance(event) { this.fuelDistance = event.detail; }
+  @HostListener('window:fuelDistance', [ '$event' ]) updateFuelDistance(event) { this.fuelDistance = int(event.detail); }
 
-  @HostListener('window:oilTemp', [ '$event' ]) updateOilTemp(event) { this.oilTemp = event.detail; }
+  @HostListener('window:oilTemp', [ '$event' ]) updateOilTemp(event) { this.oilTemp = int(event.detail); }
 
-  @HostListener('window:oilPressure', [ '$event' ]) updateOilPressure(event) { this.oilPressure = Math.floor(event.detail); }
+  @HostListener('window:oilPressure', [ '$event' ]) updateOilPressure(event) { this.oilPressure = int(event.detail); }
 
-  @HostListener('window:totalMileage', [ '$event' ]) updateTotalMileage(event) { this.totalMileage = Math.floor(event.detail); }
+  @HostListener('window:totalMileage', [ '$event' ]) updateTotalMileage(event) { this.totalMileage = int(event.detail); }
 
-  @HostListener('window:outsideTemp', [ '$event' ]) updateOutsideTemp(event) { this.outsideTemp = event.detail; }
+  @HostListener('window:outsideTemp', [ '$event' ]) updateOutsideTemp(event) { this.outsideTemp = int(event.detail); }
 
   @HostListener('window:selectedPrimaryTab', [ '$event' ]) updateSelectedPrimaryTab(event) { this.animateSelectedPrimaryTabChange(event.detail); }
 
   @HostListener('window:selectedSecondaryTab', [ '$event' ]) updateSelectedSecondaryTab(event) { this.animateSelectedSecondaryTabChange(event.detail); }
+
+  @HostListener('window:externalLamp', [ '$event' ]) updateExternalLamp(event) { this.externalLamp = event.detail; }
+
+  @HostListener('window:headlamp', [ '$event' ]) updateHeadlamp(event) { this.headlamp = event.detail; }
+
+  @HostListener('window:autoHeadlamp', [ '$event' ]) updateAutoHeadlamp(event) { this.autoHeadlamp = event.detail; }
+
+  @HostListener('window:highBeam', [ '$event' ]) updateHighBeam(event) { this.highBeam = event.detail; }
+
+  @HostListener('window:leftIndicator', [ '$event' ]) updateLeftIndicator(event) { this.leftIndicator = event.detail; }
+
+  @HostListener('window:rightIndicator', [ '$event' ]) updateRightIndicator(event) { this.rightIndicator = event.detail; }
+
+  @HostListener('window:compass', [ '$event' ]) updateCompass(event) { this.compass = event.detail; }
+
 
   tickRotation(value: number): string {
     const percent = 100 * value / this.tachMax;
@@ -424,5 +475,6 @@ export class DashComponent implements OnInit {
   max(v1: number, v2: number) { return ( v1 > v2 ) ? v1 : v2; }
 
   min(v1: number, v2: number) { return ( v1 < v2 ) ? v1 : v2; }
+
 
 }

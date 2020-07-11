@@ -14,3 +14,13 @@ export type SecondaryTabItemType =
   | 'None'
   | 'Trip 1'
   | 'Trip 2';
+
+export type CardinalDirectionType =
+  | 'N'
+  | 'S'
+  | 'E'
+  | 'W'
+  | 'NW'
+  | 'NE'
+  | 'SW'
+  | 'SE';

@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { MatSliderChange } from '@angular/material/slider';
-import { PrimaryTabItemType, PrndlType, SecondaryTabItemType } from '../../models';
-import { MatOptionSelectionChange } from '@angular/material/core';
+import { CardinalDirectionType, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsType } from '../../models';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -13,7 +11,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ControlsComponent implements OnInit, OnChanges {
 
   @Input() relevantKeys: { key: string, default_: any }[] = [];
-
   menu: { primary: PrimaryTabItemType, secondary: SecondaryTabItemType[] }[] = [
     {
       primary: 'Trip Computer',
@@ -44,46 +41,55 @@ export class ControlsComponent implements OnInit, OnChanges {
   readonly firstColFlex: number = 30;
   readonly secondColFlex: number = 50;
 
-  @Input() minRpm: number = 0;
-  @Input() maxRpm: number = 16383.75;
-  @Input() minOilTemp: number = 0;
-  @Input() maxOilTemp: number = 300;
-  @Input() maxSpeed: number = 120;
-  @Input() maxGear: number = 10;
-  @Input() minTirePressure: number = 0;
-  @Input() maxTirePressure: number = 40;
-  @Input() minOilPressure: number = 0;
-  @Input() maxOilPressure: number = 80;
-
-
   readonly prndlList: PrndlType[] = [ 'P', 'R', 'N', 'D', 'L' ];
-  readonly tires: string[] = [ 'Front Left', 'Rear Left', 'Rear Right', 'Front Right' ];
+  readonly directionList: CardinalDirectionType[] = [ 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' ];
+  readonly unitsList: UnitsType[] = [ 'imperial', 'metric' ];
+
+  readonly controls: any[] = [
+    { title: 'Units', type: 'header' },
+
+    { title: 'Units', key: 'units', type: 'radio', options: this.unitsList },
+
+    { title: 'Indicators', type: 'header' },
+
+    { title: 'Total Mileage', key: 'totalMileage', type: 'slider', range: [ 0, 120000, 0.1 ] },
+    { title: 'Left Indicator', key: 'leftIndicator', type: 'checkbox' },
+    { title: 'Right Indicator', key: 'rightIndicator', type: 'checkbox' },
+    { title: 'High Beam', key: 'highBeam', type: 'checkbox' },
+    { title: 'Headlamp', key: 'headlamp', type: 'checkbox' },
+    { title: 'Auto Headlamp', key: 'autoHeadlamp', type: 'checkbox' },
+    { title: 'Compass', key: 'compass', type: 'select', options: this.directionList },
+
+    { title: 'Tachometer', type: 'header' },
+
+    { title: 'PRNDL', key: 'prndl', type: 'select', options: this.prndlList },
+    { title: 'Gear', key: 'gear', type: 'slider', range: [ 1, 10, 1 ] },
+    { title: 'RPM', key: 'rpm', type: 'slider', range: [ 0, 16000, 0.1 ] },
+    { title: 'Speed', key: 'speed', type: 'slider', range: [ 0, 120, 0.1 ] },
+
+    { title: 'Right Bumper', type: 'header' },
+
+    { title: 'Fuel Distance', key: 'fuelDistance', type: 'slider', range: [ 0, 300, 0.1 ] },
+    { title: 'Fuel Level', key: 'fuelLevel', type: 'slider', range: [ 0, 100, 0.1 ] },
+
+    { title: 'Left Bumper', type: 'header' },
+
+    { title: 'Oil Temp', key: 'oilTemp', type: 'slider', range: [ 0, 300, 0.1 ] },
+
+    { title: 'Left Peripherals', type: 'header' },
+
+    { title: 'Front Left Tire Pressure', key: 'tirePressure', type: 'slider', range: [ 0, 40, 0.1 ], idx: 0 },
+    { title: 'Rear Left Tire Pressure', key: 'tirePressure', type: 'slider', range: [ 0, 40, 0.1 ], idx: 1 },
+    { title: 'Rear Right Tire Pressure', key: 'tirePressure', type: 'slider', range: [ 0, 40, 0.1 ], idx: 2 },
+    { title: 'Front Right Tire Pressure', key: 'tirePressure', type: 'slider', range: [ 0, 40, 0.1 ], idx: 3 },
+
+    { title: 'Oil Pressure', key: 'oilPressure', type: 'slider', range: [ 0, 80, 0.1 ] },
+  ];
+
   private _form: FormGroup;
 
   constructor(private _formBuilder: FormBuilder) {
   }
-
-  get rpm() { return window.rpm; }
-
-  get speed() { return window.speed; }
-
-  get prndl() { return window.prndl; }
-
-  get gear() { return window.gear; }
-
-  get units() { return window.units; }
-
-  get totalMileage() { return window.totalMileage; }
-
-  get fuelLevel() { return window.fuelLevel; }
-
-  get fuelDistance() { return window.fuelDistance; }
-
-  get oilTemp() { return window.oilTemp; }
-
-  get oilPressure() { return window.oilPressure; }
-
-  get outsideTemp() { return window.outsideTemp; }
 
   get selectedPrimaryTab() { return window.selectedPrimaryTab; }
 
@@ -99,44 +105,27 @@ export class ControlsComponent implements OnInit, OnChanges {
     } catch (e) { }
   }
 
+  keyToFormControlName(control: any): string {
+    if (control.idx === undefined || control.idx === null) {
+      return control.key;
+    }
+    return control.key + control.idx;
+  }
+
+  windowValue(key: string, idx?: number) {
+    if (idx !== null) {
+      return window[key][idx];
+    }
+    return window[key];
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     this.initForm();
   }
 
   tirePressure(i: number) {
-    try {
-      return window.tirePressure[i];
-    } catch (e) {
-      return 0;
-    }
+    return window.tirePressure[i];
   }
-
-  updateFuelLevel(event: MatSliderChange): void { this.update('fuelLevel', event.value); }
-
-  updateFuelDistance(event: MatSliderChange): void { this.update('fuelDistance', event.value); }
-
-  updateRpm(event: MatSliderChange): void { this.update('rpm', event.value); }
-
-  updateSpeed(event: MatSliderChange): void { this.update('speed', event.value); }
-
-  updateOilTemp(event: MatSliderChange): void { this.update('oilTemp', event.value); }
-
-  updateOutsideTemp(event: MatSliderChange): void { this.update('temp', event.value); }
-
-  updateOilPressure(event: MatSliderChange): void { this.update('oilPressure', event.value); }
-
-  updatePRNDL(event: MatOptionSelectionChange): void { if (event.isUserInput) { this.update('prndl', event.source.value); } }
-
-  updateTirePressure(event: MatSliderChange, tire: number): void {
-    window.tirePressure[tire] = event.value;
-    this.update('tirePressure', window.tirePressure);
-  }
-
-  updateGear(event: MatSliderChange): void { this.update('gear', event.value); }
-
-  updateUnits(event): void { this.update('units', event.value); }
-
-  updateTotalMileage(event: MatSliderChange): void { this.update('totalMileage', event.value); }
 
   leftPressed(): void {
     let i = this.menu.findIndex(x => x.primary === this.selectedPrimaryTab) - 1;
@@ -174,33 +163,43 @@ export class ControlsComponent implements OnInit, OnChanges {
     this.initForm();
   }
 
+  update(key: string, value: any, idx?: number) {
+    if (idx === null || idx === undefined) {
+      window[key] = value;
+    } else {
+      window[key][idx] = value;
+    }
+    window.dispatchEvent(new CustomEvent(key, { detail: window[key] }));
+  }
+
   private initForm(): void {
     for (const key of this.relevantKeys) {
       window[key.key] = key.default_;
     }
 
     this._form = this._formBuilder.group({
-      rpm: [ this.rpm ],
-      prndl: [ this.prndl ],
-      speed: [ this.speed ],
-      gear: [ this.gear ],
-      units: [ this.units ],
-      fuelLevel: [ this.fuelLevel ],
-      outsideTemp: [ this.outsideTemp ],
-      oilTemp: [ this.oilTemp ],
-      oilPressure: [ this.oilPressure ],
-      fuelDistance: [ this.fuelDistance ],
-      tirePressure0: [ this.tirePressure(0) ],
-      tirePressure1: [ this.tirePressure(1) ],
-      tirePressure2: [ this.tirePressure(2) ],
-      tirePressure3: [ this.tirePressure(3) ],
-      totalMileage: [ this.totalMileage ],
+      rpm: [ window.rpm ],
+      prndl: [ window.prndl ],
+      speed: [ window.speed ],
+      gear: [ window.gear ],
+      units: [ window.units ],
+      fuelLevel: [ window.fuelLevel ],
+      outsideTemp: [ window.outsideTemp ],
+      oilTemp: [ window.oilTemp ],
+      oilPressure: [ window.oilPressure ],
+      fuelDistance: [ window.fuelDistance ],
+      autoHeadlamp: [ window.autoHeadlamp ],
+      externalLamp: [ window.externalLamp ],
+      headlamp: [ window.headlamp ],
+      highBeam: [ window.highBeam ],
+      leftIndicator: [ window.leftIndicator ],
+      rightIndicator: [ window.rightIndicator ],
+      compass: [ window.compass ],
+      tirePressure0: [ window.tirePressure[0] ],
+      tirePressure1: [ window.tirePressure[1] ],
+      tirePressure2: [ window.tirePressure[2] ],
+      tirePressure3: [ window.tirePressure[3] ],
+      totalMileage: [ window.totalMileage ],
     });
   }
-
-  private update(key: string, value: any) {
-    window[key] = value;
-    window.dispatchEvent(new CustomEvent(key, { detail: value }));
-  }
-
 }
