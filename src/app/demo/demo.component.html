@@ -10,10 +10,12 @@
       <app-dash></app-dash>
     </div>
 
-    <div class="options-wrapper">
-      <app-controls></app-controls>
+    <div class="options-wrapper" fxLayoutGap="12px">
+      <app-controls class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys"></app-controls>
+      <app-window-display class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys"></app-window-display>
     </div>
   </div>
+
 </ng-template>
 <ng-template #loginBlock>
   <div fxLayout="column"

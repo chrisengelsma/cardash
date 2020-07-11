@@ -1,184 +1,196 @@
 <form [formGroup]="form">
-  <div fxLayout="row" fxFlexFill fxLayoutGap="12px">
+  <mat-card>
+    <mat-card-title-group>
+      <mat-card-title>
+        Testing Controls
+      </mat-card-title>
+    </mat-card-title-group>
+    <mat-card-content>
 
-    <mat-card [fxFlex]="50">
-      <mat-card-title-group>
-        <mat-card-title>
-          Testing Controls
-        </mat-card-title>
-      </mat-card-title-group>
-      <mat-card-content>
+      <div fxLayout="column" fxFlex>
 
-        <div fxLayout="column" fxFlex>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Units</span>
 
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Units</span>
+          <mat-radio-group [fxFlex]="secondColFlex"
+                           fxLayoutGap="12px"
+                           (change)="updateUnits($event)"
+                           formControlName="units">
+            <mat-radio-button value="imperial">Imperial</mat-radio-button>
+            <mat-radio-button value="metric">Metric</mat-radio-button>
+          </mat-radio-group>
+          <span fxFlex></span>
+        </div>
 
-            <mat-radio-group [fxFlex]="secondColFlex"
-                             fxLayoutGap="12px"
-                             (change)="updateUnits($event)"
-                             formControlName="units">
-              <mat-radio-button value="imperial">Imperial</mat-radio-button>
-              <mat-radio-button value="metric">Metric</mat-radio-button>
-            </mat-radio-group>
-            <span fxFlex></span>
-          </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Total Mileage</span>
+          <mat-slider formControlName="rpm"
+                      [fxFlex]="secondColFlex"
+                      [step]="0.1"
+                      [min]="0"
+                      [max]="150000"
+                      (input)="updateTotalMileage($event)">
+          </mat-slider>
+          <span fxFlex>{{ totalMileage }}</span>
+        </div>
 
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Total Mileage</span>
-            <mat-slider formControlName="rpm"
-                        [fxFlex]="secondColFlex"
-                        [step]="0.1"
-                        [min]="0"
-                        [max]="150000"
-                        (input)="updateTotalMileage($event)">
-            </mat-slider>
-            <span fxFlex>{{ totalMileage }}</span>
-          </div>
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Tachometer</h2>
+          <hr fxFlex/>
+        </div>
 
-          <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px"><hr fxFlex /><h2>Tachometer</h2><hr fxFlex /></div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">PRNDL</span>
+          <mat-form-field [fxFlex]="secondColFlex">
+            <mat-select formControlName="prndl">
+              <mat-option *ngFor="let prndl of prndlList"
+                          [value]="prndl"
+                          (onSelectionChange)="updatePRNDL($event)">
+                {{ prndl }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span fxFlex></span>
+        </div>
 
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">PRNDL</span>
-            <mat-form-field [fxFlex]="secondColFlex">
-              <mat-select formControlName="prndl">
-                <mat-option *ngFor="let prndl of prndlList"
-                            [value]="prndl"
-                            (onSelectionChange)="updatePRNDL($event)">
-                  {{ prndl }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-            <span fxFlex></span>
-          </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Gear</span>
+          <mat-slider formControlName="rpm"
+                      [fxFlex]="secondColFlex"
+                      [step]="1"
+                      [min]="1"
+                      [max]="8"
+                      (input)="updateGear($event)">
+          </mat-slider>
+          <span fxFlex>{{ gear }}</span>
+        </div>
 
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Gear</span>
-            <mat-slider formControlName="rpm"
-                        [fxFlex]="secondColFlex"
-                        [step]="1"
-                        [min]="1"
-                        [max]="8"
-                        (input)="updateGear($event)">
-            </mat-slider>
-            <span fxFlex>{{ gear }}</span>
-          </div>
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">RPM</span>
+          <mat-slider formControlName="rpm"
+                      [fxFlex]="secondColFlex"
+                      [step]="0.1"
+                      [min]="minRpm"
+                      [max]="maxRpm"
+                      (input)="updateRpm($event)">
+          </mat-slider>
+          <span fxFlex>{{ rpm }}</span>
+        </div>
 
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">RPM</span>
-            <mat-slider formControlName="rpm"
-                        [fxFlex]="secondColFlex"
-                        [step]="0.1"
-                        [min]="minRpm"
-                        [max]="maxRpm"
-                        (input)="updateRpm($event)">
-            </mat-slider>
-            <span fxFlex>{{ rpm }}</span>
-          </div>
-
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Speed</span>
-            <mat-slider formControlName="speed"
-                        [fxFlex]="secondColFlex"
-                        [step]="0.05"
-                        [min]="0"
-                        [max]="maxSpeed"
-                        (input)="updateSpeed($event)">
-            </mat-slider>
-            <span fxFlex>{{ speed }}</span>
-          </div>
-
-
-          <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px"><hr fxFlex /><h2>Right Bumper</h2><hr fxFlex /></div>
-
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Fuel Distance</span>
-            <mat-slider formControlName="fuelLevel"
-                        [fxFlex]="secondColFlex"
-                        [step]="1"
-                        [min]="0"
-                        [max]="400"
-                        (input)="updateFuelDistance($event)">
-            </mat-slider>
-            <span fxFlex>{{ fuelDistance }}</span>
-          </div>
-
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Fuel Level</span>
-            <mat-slider formControlName="fuelLevel"
-                        [fxFlex]="secondColFlex"
-                        [step]="1"
-                        [min]="0"
-                        [max]="100"
-                        (input)="updateFuelLevel($event)">
-            </mat-slider>
-            <span fxFlex>{{ fuelLevel }}</span>
-          </div>
-
-          <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px"><hr fxFlex /><h2>Left Bumper</h2><hr fxFlex /></div>
-
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Oil Temp</span>
-            <mat-slider formControlName="oilTemp"
-                        [fxFlex]="secondColFlex"
-                        [step]="1"
-                        [min]="minOilTemp"
-                        [max]="maxOilTemp"
-                        (input)="updateOilTemp($event)">
-            </mat-slider>
-            <span fxFlex>{{ oilTemp }}</span>
-          </div>
-
-
-          <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px"><hr fxFlex /><h2>Secondary (Left) Tab</h2><hr fxFlex /></div>
-
-          <div *ngFor="let tire of tires; let i = index;" fxLayout="row" fxLayoutAlign="center center"
-               fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">{{ tire }} Tire Pressure</span>
-            <div [fxFlex]="secondColFlex">
-              <mat-slider [formControlName]="'tirePressure' + i"
-                          fxFlex
-                          [min]="0"
-                          [max]="40"
-                          (input)="updateTirePressure($event, i)">
-              </mat-slider>
-            </div>
-            <span fxFlex>{{ tirePressure[i] }} Psi</span>
-          </div>
-
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <span [fxFlex]="firstColFlex">Oil Pressure</span>
-            <mat-slider formControlName="oilPressure"
-                        [fxFlex]="secondColFlex"
-                        [step]="0.1"
-                        [min]="0"
-                        [max]="80"
-                        (input)="updateOilPressure($event)">
-            </mat-slider>
-            <span fxFlex>{{ oilPressure }}</span>
-          </div>
-
-          <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px"><hr fxFlex /><h2>Primary (Right) Tab</h2><hr fxFlex /></div>
-
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Speed</span>
+          <mat-slider formControlName="speed"
+                      [fxFlex]="secondColFlex"
+                      [step]="0.05"
+                      [min]="0"
+                      [max]="maxSpeed"
+                      (input)="updateSpeed($event)">
+          </mat-slider>
+          <span fxFlex>{{ speed }}</span>
         </div>
 
 
-      </mat-card-content>
-
-    </mat-card>
-
-    <mat-card [fxFlex]="50">
-      <mat-card-title-group>
-        <mat-card-title>
-          Window object
-        </mat-card-title>
-      </mat-card-title-group>
-      <mat-card-content>
-        <div class="column">
-          <mat-checkbox [checked]="showOnlyRelevant" (change)="showOnlyRelevant = !showOnlyRelevant">Show only relevant variables</mat-checkbox>
-          <pre> {{ printWindow  }} </pre>
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Right Bumper</h2>
+          <hr fxFlex/>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Fuel Distance</span>
+          <mat-slider formControlName="fuelLevel"
+                      [fxFlex]="secondColFlex"
+                      [step]="1"
+                      [min]="0"
+                      [max]="400"
+                      (input)="updateFuelDistance($event)">
+          </mat-slider>
+          <span fxFlex>{{ fuelDistance }}</span>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Fuel Level</span>
+          <mat-slider formControlName="fuelLevel"
+                      [fxFlex]="secondColFlex"
+                      [step]="1"
+                      [min]="0"
+                      [max]="100"
+                      (input)="updateFuelLevel($event)">
+          </mat-slider>
+          <span fxFlex>{{ fuelLevel }}</span>
+        </div>
+
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Left Bumper</h2>
+          <hr fxFlex/>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Oil Temp</span>
+          <mat-slider formControlName="oilTemp"
+                      [fxFlex]="secondColFlex"
+                      [step]="1"
+                      [min]="minOilTemp"
+                      [max]="maxOilTemp"
+                      (input)="updateOilTemp($event)">
+          </mat-slider>
+          <span fxFlex>{{ oilTemp }}</span>
+        </div>
+
+
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Secondary (Left) Tab</h2>
+          <hr fxFlex/>
+        </div>
+
+        <div *ngFor="let tire of tires; let i = index;" fxLayout="row" fxLayoutAlign="center center"
+             fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">{{ tire }} Tire Pressure</span>
+          <div [fxFlex]="secondColFlex">
+            <mat-slider [formControlName]="'tirePressure' + i"
+                        fxFlex
+                        [min]="0"
+                        [max]="40"
+                        (input)="updateTirePressure($event, i)">
+            </mat-slider>
+          </div>
+          <span fxFlex>{{ tirePressure[i] }} Psi</span>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <span [fxFlex]="firstColFlex">Oil Pressure</span>
+          <mat-slider formControlName="oilPressure"
+                      [fxFlex]="secondColFlex"
+                      [step]="0.1"
+                      [min]="0"
+                      [max]="80"
+                      (input)="updateOilPressure($event)">
+          </mat-slider>
+          <span fxFlex>{{ oilPressure }}</span>
+        </div>
+
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Primary (Right) Tab</h2>
+          <hr fxFlex/>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <button mat-raised-button color="primary" (click)="upPressed()">Up</button>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+            <button mat-raised-button color="primary" (click)="leftPressed()">Left</button>
+            <button mat-raised-button color="primary" (click)="rightPressed()">Right</button>
+          </div>
+          <button mat-raised-button color="primary" (click)="downPressed()">Down</button>
+        </div>
+      </div>
+
+
+    </mat-card-content>
+
+  </mat-card>
+
 </form>

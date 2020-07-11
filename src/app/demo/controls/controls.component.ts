@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MatSliderChange } from '@angular/material/slider';
-import { PrndlType } from '../../models';
+import { PrimaryTabItemType, PrndlType, SecondaryTabItemType } from '../../models';
 import { MatOptionSelectionChange } from '@angular/material/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -10,25 +10,35 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   styleUrls: [ './controls.component.scss' ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ControlsComponent implements OnInit {
+export class ControlsComponent implements OnInit, OnChanges {
 
-  readonly relevantKeys: { key: string, default_: any }[] = [
-    { key: 'rpm', default_: 0 },
-    { key: 'speed', default_: 0 },
-    { key: 'fuelLevel', default_: 100 },
-    { key: 'fuelDistance', default_: 0 },
-    { key: 'prndl', default_: 'P' },
-    { key: 'oilTemp', default_: 200 },
-    { key: 'oilPressure', default_: 28 },
-    { key: 'outsideTemp', default_: 75 },
-    { key: 'gear', default_: 1 },
-    { key: 'units', default_: 'imperial' },
-    { key: 'tirePressure', default_: [ 36, 36, 36, 36 ] },
-    { key: 'totalMileage', default_: 0 },
-    { key: 'oilPressure', default_: 28 },
-    { key: 'selectedPrimaryTab', default_: 0 },
-    { key: 'selectedSecondaryTab', default_: 0 },
-    { key: 'tripComputer', default_: 0 },
+  @Input() relevantKeys: { key: string, default_: any }[] = [];
+
+  menu: { primary: PrimaryTabItemType, secondary: SecondaryTabItemType[] }[] = [
+    {
+      primary: 'Trip Computer',
+      secondary: [ 'Trip 1', 'Trip 2' ]
+    },
+    {
+      primary: 'Performance',
+      secondary: [ 'None' ]
+    },
+    {
+      primary: 'Audio',
+      secondary: [ 'None' ]
+    },
+    {
+      primary: 'Maintenance',
+      secondary: [ 'None' ]
+    },
+    {
+      primary: 'Options',
+      secondary: [ 'None' ]
+    },
+    {
+      primary: 'Simplify',
+      secondary: [ 'None' ]
+    }
   ];
 
   readonly firstColFlex: number = 30;
@@ -45,7 +55,6 @@ export class ControlsComponent implements OnInit {
   @Input() minOilPressure: number = 0;
   @Input() maxOilPressure: number = 80;
 
-  showOnlyRelevant: boolean = true;
 
   readonly prndlList: PrndlType[] = [ 'P', 'R', 'N', 'D', 'L' ];
   readonly tires: string[] = [ 'Front Left', 'Rear Left', 'Rear Right', 'Front Right' ];
@@ -76,26 +85,31 @@ export class ControlsComponent implements OnInit {
 
   get outsideTemp() { return window.outsideTemp; }
 
+  get selectedPrimaryTab() { return window.selectedPrimaryTab; }
+
+  get selectedSecondaryTab() { return window.selectedSecondaryTab; }
+
+  get tripComputer() { return window.tripComputer; }
+
   get form(): FormGroup { return this._form; }
 
-  get printWindow(): string {
-    if (this.showOnlyRelevant) {
-      const result = {};
-      for (const key of this.relevantKeys) { result[key.key] = window[key.key]; }
-      return JSON.stringify(result, null, 2);
-    } else {
-      const cache = [];
-      return JSON.stringify(window, (key, value) => {
-        if (typeof value === 'object' && value !== null) {
-          if (cache.includes(value)) { return; }
-          cache.push(value);
-        }
-        return value;
-      }, 2);
-    }
+  get primaryTabs() {
+    try {
+      return this.menu.map(x => x.primary);
+    } catch (e) { }
   }
 
-  tirePressure(i: number) { return window.tirePressure[i]; }
+  ngOnChanges(changes: SimpleChanges): void {
+    this.initForm();
+  }
+
+  tirePressure(i: number) {
+    try {
+      return window.tirePressure[i];
+    } catch (e) {
+      return 0;
+    }
+  }
 
   updateFuelLevel(event: MatSliderChange): void { this.update('fuelLevel', event.value); }
 
@@ -124,7 +138,43 @@ export class ControlsComponent implements OnInit {
 
   updateTotalMileage(event: MatSliderChange): void { this.update('totalMileage', event.value); }
 
+  leftPressed(): void {
+    let i = this.menu.findIndex(x => x.primary === this.selectedPrimaryTab) - 1;
+    if (i < 0) { i = this.primaryTabs.length - 1; }
+    window.selectedPrimaryTab = this.menu[i].primary;
+    window.selectedSecondaryTab = this.menu[i].secondary[0];
+    this.update('selectedPrimaryTab', this.selectedPrimaryTab);
+    this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+  }
+
+  upPressed(): void {
+    const currentTab = this.menu.find(x => x.primary === this.selectedPrimaryTab);
+    let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) - 1;
+    if (i < 0) { i = currentTab.secondary.length - 1; }
+    window.selectedSecondaryTab = currentTab.secondary[i];
+    this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+  }
+
+  downPressed(): void {
+    const currentTab = this.menu.find(x => x.primary === this.selectedPrimaryTab);
+    let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) + 1;
+    if (i === currentTab.secondary.length) { i = 0; }
+    window.selectedSecondaryTab = currentTab.secondary[i];
+    this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+  }
+
+  rightPressed(): void {
+    let i = this.primaryTabs.findIndex(x => x === this.selectedPrimaryTab) + 1;
+    if (i === this.primaryTabs.length) { i = 0; }
+    window.selectedPrimaryTab = this.primaryTabs[i];
+    this.update('selectedPrimaryTab', this.selectedPrimaryTab);
+  }
+
   ngOnInit(): void {
+    this.initForm();
+  }
+
+  private initForm(): void {
     for (const key of this.relevantKeys) {
       window[key.key] = key.default_;
     }

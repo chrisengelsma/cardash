@@ -11,12 +11,14 @@ import { MatSliderModule } from '@angular/material/slider';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MaterialModule } from '../material-module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { WindowDisplayComponent } from './window-display/window-display.component';
 
 
 @NgModule({
   declarations: [
     DemoComponent,
     ControlsComponent,
+    WindowDisplayComponent,
   ],
   imports: [
     DashModule,

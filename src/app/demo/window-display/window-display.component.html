@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-title-group>
+    <mat-card-title>
+      Window object
+    </mat-card-title>
+  </mat-card-title-group>
+  <mat-card-content>
+    <div style="overflow-y: auto">
+      <mat-checkbox [checked]="showOnlyRelevant"
+                    (change)="showOnlyRelevant = !showOnlyRelevant">
+        Show only relevant variables
+      </mat-checkbox>
+      <pre> {{ printWindow  }} </pre>
+    </div>
+  </mat-card-content>
+</mat-card>

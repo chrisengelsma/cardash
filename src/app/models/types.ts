@@ -9,3 +9,8 @@ export type PrimaryTabItemType =
   | 'Maintenance'
   | 'Options'
   | 'Simplify';
+
+export type SecondaryTabItemType =
+  | 'None'
+  | 'Trip 1'
+  | 'Trip 2';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
@@ -8,6 +8,25 @@ import { environment } from '../../environments/environment';
   styleUrls: [ './demo.component.scss' ]
 })
 export class DemoComponent implements OnInit {
+
+  relevantKeys: { key: string, default_: any }[] = [
+    { key: 'rpm', default_: 0 },
+    { key: 'speed', default_: 0 },
+    { key: 'fuelLevel', default_: 100 },
+    { key: 'fuelDistance', default_: 0 },
+    { key: 'prndl', default_: 'P' },
+    { key: 'oilTemp', default_: 200 },
+    { key: 'oilPressure', default_: 28 },
+    { key: 'outsideTemp', default_: 75 },
+    { key: 'gear', default_: 1 },
+    { key: 'units', default_: 'imperial' },
+    { key: 'tirePressure', default_: [ 36, 36, 36, 36 ] },
+    { key: 'totalMileage', default_: 0 },
+    { key: 'oilPressure', default_: 28 },
+    { key: 'selectedPrimaryTab', default_: 'Trip Computer' },
+    { key: 'selectedSecondaryTab', default_: 'Trip 1' },
+    { key: 'tripComputer', default_: 0 },
+  ];
 
   authenticated: boolean = false;
 

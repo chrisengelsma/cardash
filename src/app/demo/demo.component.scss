@@ -13,7 +13,10 @@
   right: 0;
   width: 100vw;
   max-height: 40vh;
-  overflow-y: auto;
-
+  height: 100%;
+  overflow-y: hidden;
 }
 
+.scrollable-wrapper {
+  overflow-y: auto;
+}

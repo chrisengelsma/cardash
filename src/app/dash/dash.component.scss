@@ -4,6 +4,12 @@
   100% { opacity: 1; }
 }
 
+rect.design-outline {
+  stroke: white;
+  stroke-dasharray: 5, 5;
+  stroke-width: 0.5;
+}
+
 .tire-warning {
   animation: pulse 1s infinite;
 }
