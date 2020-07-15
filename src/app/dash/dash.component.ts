@@ -1,5 +1,5 @@
-import { Component, HostListener, OnInit } from '@angular/core';
-import { CardinalDirectionType, IMenuOption, IRpmZone, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsType } from '../models';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IDashboardData, IMenuOption, IRpmZone, PrimaryTabItemType } from '../models';
 
 export function int(v: number): number { return Math.floor(v); }
 
@@ -8,36 +8,66 @@ export function int(v: number): number { return Math.floor(v); }
   templateUrl: './dash.component.html',
   styleUrls: [ './dash.component.scss' ]
 })
-export class DashComponent implements OnInit {
-  refreshRate = 1000 / 60;
+export class DashComponent implements OnInit, OnDestroy {
+  fps = 60;
+  refreshRate: number = 1000 / this.fps;
+  interval: number;
 
   ////////////////////////////////////////////////////////////////////////////
   // Window objects
 
-  rpm: number = 0;
-  prndl: PrndlType = 'P';
-  speed: number = 0;
-  gear: number = 1;
-  tirePressure: number[] = [ 36, 36, 36, 36 ];
-  units: UnitsType = 'imperial';
-  fuelLevel: number = 100;
-  fuelDistance: number = 0;
-  oilTemp: number = 200;
-  oilPressure: number = 28;
-  outsideTemp: number = 75;
-  totalMileage: number = 0;
-  externalLamp: boolean = false;
-  headlamp: boolean = false;
-  autoHeadlamp: boolean = false;
-  highBeam: boolean = false;
-  leftIndicator: boolean = false;
-  rightIndicator: boolean = false;
-  compass: CardinalDirectionType = 'N';
-  secondaryTabs: object = {
-    tripComputer: {}
+  data: IDashboardData = {
+    rpm: 0,
+    gear: 'P',
+    speed: 0,
+    gearNumber: 1,
+    tirePressure: [ 36, 36, 36, 36 ],
+    unit: 'imperial',
+    fuelLevel: 100,
+    fuelDistance: 0,
+    oilTemp: 200,
+    oilPressure: 28,
+    outsideTemp: 75,
+    gforce: [ 0.0, 0.0 ],
+    totalMileage: 0,
+    compass: 'N',
+    indicators: {
+      externalLights: false,
+      leftTurn: false,
+      rightTurn: false,
+      mil: false,
+      headlights: false,
+      autoHeadlights: false,
+      highBeam: false,
+    },
+    tripComputer: {
+      trip1: {
+        distance: 0,
+        time: 0,
+        fuelEconomy: 0,
+      }
+    },
+    performance: {
+      timer: {
+        startSpeed: 0,
+        stopSpeed: 0,
+        time: 2300,
+      },
+    },
+    audio: {
+      wave: 'fm',
+      station: 89.1
+    },
+    maintenance: {
+      oil: 100,
+      transmissionFluid: 100,
+      revs: 0,
+      hours: 0,
+      idleHours: 0,
+    },
+    selectedPrimaryTab: 'tripComputer',
+    selectedSecondaryTab: 'trip1',
   };
-  selectedPrimaryTab: PrimaryTabItemType = 'Trip Computer';
-  selectedSecondaryTab: SecondaryTabItemType = 'Trip 1';
 
   ////////////////////////////////////////////////////////////////////////////
   // Menu indices
@@ -88,7 +118,6 @@ export class DashComponent implements OnInit {
 
   tireWidth: number = 10;
   tireHeight: number = 20;
-  tireDangerHigh: number = 38;
   tireDangerLow: number = 30;
 
   oilPressureMin: number = 0;
@@ -120,55 +149,90 @@ export class DashComponent implements OnInit {
 
   menu: IMenuOption[] = [
     {
-      primary: 'Trip Computer',
       key: 'tripComputer',
+      primary: 'Trip Computer',
       secondary: [
         {
-          title: 'Trip 1',
           key: 'trip1',
+          title: 'Trip 1',
+          type: 'rows',
           rows: [
-            { type: 'metric', title: 'Distance', value: 0, units: 'dist', decimals: 1 },
-            { type: 'metric', title: 'Fuel Economy', value: 0, units: 'econ', decimals: 1 },
-            { type: 'metric', title: 'Time', value: 0, units: 'time', decimals: 0 }
-          ]
-        },
-        {
-          title: 'Trip 2',
-          key: 'trip2',
-          rows: [
-            { type: 'metric', title: 'Distance', value: 0, units: 'dist', decimals: 1 },
-            { type: 'metric', title: 'Fuel Economy', value: 0, units: 'econ', decimals: 1 },
-            { type: 'metric', title: 'Time', value: 0, units: 'time', decimals: 0 }
+            { type: 'metric', key: 'tripComputer.trip1.distance', title: 'Distance', units: 'dist', decimals: 1 },
+            { type: 'metric', key: 'tripComputer.trip1.fuelEconomy', title: 'Fuel Economy', units: 'econ', decimals: 1 },
+            { type: 'metric', key: 'tripComputer.trip1.time', title: 'Time', units: 'time', decimals: 0 }
           ]
         }
       ]
     },
     {
-      primary: 'Performance',
       key: 'performance',
-      secondary: []
+      primary: 'Performance',
+      secondary: [
+        {
+          key: 'gforce',
+          type: 'header',
+          title: 'G-Force',
+        },
+        {
+          key: 'performanceTimer',
+          type: 'header',
+          title: 'Performance Timer',
+        },
+        {
+          key: 'lapTimer',
+          type: 'header',
+          title: 'Lap Timer',
+          headers: [ 'Configure (PDR)', 'to Start Lap Timer' ],
+        }
+      ]
     },
     {
-      primary: 'Audio',
       key: 'audio',
-      secondary: []
+      primary: 'Audio',
+      secondary: [
+        {
+          key: 'audio',
+          type: 'audio',
+        }
+      ]
     },
     {
-      primary: 'Maintenance',
       key: 'maintenance',
-      secondary: []
+      primary: 'Maintenance',
+      secondary: [
+        {
+          key: 'fluidLife',
+          title: 'Oil & Fluid Life',
+          type: 'rows',
+          rows: [
+            { type: 'metric', key: 'maintenance.oil', title: 'Engine Oil', units: 'percent', decimals: 0 },
+            { type: 'metric', key: 'maintenance.transmissionFluid', title: 'Transmission Fluid', units: 'percent', decimals: 0 },
+          ]
+        },
+        {
+          key: 'engineLife',
+          title: 'Engine Life',
+          type: 'rows',
+          rows: [
+            { type: 'metric', key: 'maintenance.revs', title: 'Rev\'s/10,000', units: 'none', decimals: 0 },
+            { type: 'metric', key: 'maintenance.hours', title: 'Hours', units: 'none', decimals: 1 },
+            { type: 'metric', key: 'maintenance.idleHours', title: 'Idle Hours', units: 'none', decimals: 1 },
+          ]
+        }
+      ]
     },
     {
-      primary: 'Options',
       key: 'options',
+      primary: 'Options',
       secondary: []
     },
     {
-      primary: 'Simplify',
       key: 'simplify',
+      primary: 'Simplify',
       secondary: []
     }
   ];
+
   secondaryTabProgress: number = 0;
 
   constructor() {
@@ -178,15 +242,15 @@ export class DashComponent implements OnInit {
 
   set menuScroll(scroll: number) { this._menuScroll = scroll; }
 
-  get selectedPrimaryTabLabel() { return this.selectedPrimaryTab; }
+  get selectedPrimaryTabLabel() { return this.menu.find(x => x.key === this.data.selectedPrimaryTab).primary; }
 
   get fuelBarTickY0() { return 2 * this.meterDimension / 3 - 10; }
 
   get fuelBarTickY1() { return 2 * this.meterDimension / 3 - 6; }
 
-  get percent() { return 100 * this.rpm / this.tachMax; }
+  get percent() { return 100 * this.data.rpm / this.tachMax; }
 
-  get isInDrive() { return this.prndl === 'D'; }
+  get isInGear() { return this.data.gear === 'D' || this.data.gear === 'M'; }
 
   get needleRotation() {
     const rot = -this.percent * 270 / 100;
@@ -195,7 +259,7 @@ export class DashComponent implements OnInit {
 
   get activeTabSections() {
     try {
-      return this.menu.find(x => x.primary === this.selectedPrimaryTab).secondary;
+      return this.menu.find(x => x.key === this.data.selectedPrimaryTab).secondary;
     } catch (e) {
       return [];
     }
@@ -224,7 +288,7 @@ export class DashComponent implements OnInit {
 
   get tempUnits() { return this.isImperial ? 'F' : 'C'; }
 
-  get isImperial() { return ( this.units === 'imperial' ); }
+  get isImperial() { return ( this.data.unit === 'imperial' ); }
 
   get primaryTabY() { return this.menuY0 - 8; }
 
@@ -240,6 +304,12 @@ export class DashComponent implements OnInit {
 
   get bottomLeftPeripheralY0() { return this.topLeftPeripheralY0 + this.leftPeripheralSectionHeight + 2; }
 
+  ngOnDestroy(): void {
+    if (typeof this.interval !== 'undefined') {
+      window.clearInterval(this.interval);
+    }
+  }
+
   toHours(min: number) { return int(min / 60); }
 
   toMinuteOfHour(min: number) { return int(min % 60); }
@@ -248,13 +318,38 @@ export class DashComponent implements OnInit {
     return this.activeTabSections[i].rows;
   }
 
-  /**
-   * Animation loop for the selected secondary tab.
-   */
-  secondaryMenuAnimationLoop(): void {
+  watchLoop(): void {
     const speed = 16;
 
-    setInterval(() => {
+    this.interval = window.setInterval(() => {
+      this.data.rpm = Math.max(this.min(this.tachMax, window.rpm));
+      this.data.gear = window.gear;
+      this.data.speed = window.speed;
+      this.data.gearNumber = window.gearNumber;
+      this.data.tirePressure = window.tirePressure;
+      this.data.unit = window.unit;
+      this.data.fuelLevel = window.fuelLevel;
+      this.data.fuelDistance = window.fuelDistance;
+      this.data.oilTemp = window.oilTemp;
+      this.data.oilPressure = window.oilPressure;
+      this.data.outsideTemp = window.outsideTemp;
+      this.data.gforce = window.gforce;
+      this.data.totalMileage = window.totalMileage;
+      this.data.indicators = window.indicators;
+      this.data.compass = window.compass;
+      this.data.tripComputer = window.tripComputer;
+      this.data.performance = window.performance;
+      this.data.audio = window.audio;
+      this.data.maintenance = window.maintenance;
+
+      if (window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
+        this.animateSelectedSecondaryTabChange(window.selectedSecondaryTab);
+      }
+
+      if (window.selectedPrimaryTab !== this.data.selectedPrimaryTab) {
+        this.animateSelectedPrimaryTabChange(window.selectedPrimaryTab);
+      }
+
       if (Math.abs(this.menuScroll - this.selectedSecondaryTabIndex * this.menuHeight) > 1) {
         this.menuScroll += speed * Math.sign(this.secondaryTabProgress);
       } else {
@@ -263,9 +358,6 @@ export class DashComponent implements OnInit {
     }, this.refreshRate);
   }
 
-  /**
-   * Fuel level x-position
-   */
   fuelLevelX(percent: number) {
     const x0 = 4 * this.meterDimension / 5 - 35;
     const x1 = x0 - this.fuelBarLength;
@@ -320,72 +412,33 @@ export class DashComponent implements OnInit {
   }
 
   tireStatusColor(i: number) {
-    if (this.tirePressure[i] < this.tireDangerLow) {
+    if (this.data.tirePressure[i] < this.tireDangerLow) {
       return this.colors.yellow1;
     }
     return this.colors.green1;
   }
 
-  animateSelectedSecondaryTabChange(tab: SecondaryTabItemType): void {
-    this.selectedSecondaryTab = tab;
+  animateSelectedSecondaryTabChange(tab: string): void {
+    this.data.selectedSecondaryTab = tab;
     this.previousSecondaryTabIndex = this.selectedSecondaryTabIndex;
-    this.selectedSecondaryTabIndex = this.activeTabSections.findIndex(x => x.title === tab);
+    this.selectedSecondaryTabIndex = this.activeTabSections.findIndex(x => x.key === tab);
 
     this.secondaryTabProgress = ( this.selectedSecondaryTabIndex - this.previousSecondaryTabIndex ) * this.menuHeight;
   }
 
-  animateSelectedPrimaryTabChange(tab: PrimaryTabItemType): void {
+  animateSelectedPrimaryTabChange(tab: string): void {
     this.previousPrimaryTabIndex = this.selectedPrimaryTabIndex;
-    this.selectedPrimaryTabIndex = this.menu.findIndex(x => x.primary === tab);
+    this.selectedPrimaryTabIndex = this.menu.findIndex(x => x.key === tab);
 
+    this.data.selectedPrimaryTab = tab;
+
+    window.selectedSecondaryTab = this.data.selectedSecondaryTab = this.menu[this.selectedPrimaryTabIndex].secondary[0].key;
     this.previousSecondaryTabIndex = 0;
     this.selectedSecondaryTabIndex = 0;
 
-    this.selectedPrimaryTab = tab;
+
     this.menuScroll = 0;
   }
-
-  @HostListener('window:rpm', [ '$event' ]) updateRpm(event) { this.rpm = int(Math.min(7000, event.detail)); }
-
-  @HostListener('window:speed', [ '$event' ]) updateSpeed(event) { this.speed = int(event.detail); }
-
-  @HostListener('window:prndl', [ '$event' ]) updatePRNDL(event) { this.prndl = event.detail; }
-
-  @HostListener('window:gear', [ '$event' ]) updateGear(event) { this.gear = int(event.detail); }
-
-  @HostListener('window:tirePressure', [ '$event' ]) updateTirePressure(event) { this.tirePressure = event.detail.map(x => int(x)); }
-
-  @HostListener('window:units', [ '$event' ]) updateUnits(event) { this.units = event.detail; }
-
-  @HostListener('window:fuelLevel', [ '$event' ]) updateFuelLevel(event) { this.fuelLevel = int(event.detail); }
-
-  @HostListener('window:fuelDistance', [ '$event' ]) updateFuelDistance(event) { this.fuelDistance = int(event.detail); }
-
-  @HostListener('window:oilTemp', [ '$event' ]) updateOilTemp(event) { this.oilTemp = int(event.detail); }
-
-  @HostListener('window:oilPressure', [ '$event' ]) updateOilPressure(event) { this.oilPressure = int(event.detail); }
-
-  @HostListener('window:totalMileage', [ '$event' ]) updateTotalMileage(event) { this.totalMileage = int(event.detail); }
-
-  @HostListener('window:outsideTemp', [ '$event' ]) updateOutsideTemp(event) { this.outsideTemp = int(event.detail); }
-
-  @HostListener('window:selectedPrimaryTab', [ '$event' ]) updateSelectedPrimaryTab(event) { this.animateSelectedPrimaryTabChange(event.detail); }
-
-  @HostListener('window:selectedSecondaryTab', [ '$event' ]) updateSelectedSecondaryTab(event) { this.animateSelectedSecondaryTabChange(event.detail); }
-
-  @HostListener('window:externalLamp', [ '$event' ]) updateExternalLamp(event) { this.externalLamp = event.detail; }
-
-  @HostListener('window:headlamp', [ '$event' ]) updateHeadlamp(event) { this.headlamp = event.detail; }
-
-  @HostListener('window:autoHeadlamp', [ '$event' ]) updateAutoHeadlamp(event) { this.autoHeadlamp = event.detail; }
-
-  @HostListener('window:highBeam', [ '$event' ]) updateHighBeam(event) { this.highBeam = event.detail; }
-
-  @HostListener('window:leftIndicator', [ '$event' ]) updateLeftIndicator(event) { this.leftIndicator = event.detail; }
-
-  @HostListener('window:rightIndicator', [ '$event' ]) updateRightIndicator(event) { this.rightIndicator = event.detail; }
-
-  @HostListener('window:compass', [ '$event' ]) updateCompass(event) { this.compass = event.detail; }
 
 
   tickRotation(value: number): string {
@@ -421,7 +474,8 @@ export class DashComponent implements OnInit {
   ngOnInit(): void {
     this.populateZones();
     this.populateTicks();
-    this.secondaryMenuAnimationLoop();
+    // this.secondaryMenuAnimationLoop();
+    this.watchLoop();
   }
 
   tickLabelPosition(tick: number): string {
@@ -453,7 +507,6 @@ export class DashComponent implements OnInit {
       }
     }
 
-
     const oilTempRange = this.oilTempMax - this.oilTempMin;
     for (let i = 0; i < 3; i++) {
       this.oilTempTickValues.push(this.oilTempMax - ( i + 1 ) * 0.25 * oilTempRange);
@@ -476,5 +529,18 @@ export class DashComponent implements OnInit {
 
   min(v1: number, v2: number) { return ( v1 < v2 ) ? v1 : v2; }
 
-
+  windowValue(key: string) {
+    try {
+      const split = key.split('.');
+      if (split.length === 3) {
+        return window[split[0]][split[1]][split[2]];
+      }
+      if (split.length === 2) {
+        return window[split[0]][split[1]];
+      }
+      return window[key];
+    } catch (e) {
+      return '';
+    }
+  }
 }

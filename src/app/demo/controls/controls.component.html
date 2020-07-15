@@ -9,6 +9,21 @@
 
       <div fxLayout="column" fxFlex>
 
+        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <hr fxFlex/>
+          <h2>Menu Navigation</h2>
+          <hr fxFlex/>
+        </div>
+
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="12px">
+          <button mat-raised-button color="primary" (click)="upPressed()">Up</button>
+          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
+            <button mat-raised-button color="primary" (click)="leftPressed()">Left</button>
+            <button mat-raised-button color="primary" (click)="rightPressed()">Right</button>
+          </div>
+          <button mat-raised-button color="primary" (click)="downPressed()">Down</button>
+        </div>
+
         <div *ngFor="let control of controls"
              fxLayout="row"
              fxLayoutAlign="center center"
@@ -26,36 +41,94 @@
 
           <ng-container *ngIf="control.type === 'checkbox'">
 
-          <span [fxFlex]="firstColFlex">{{ control.title }}</span>
-          <mat-checkbox [fxFlex]="secondColFlex"
-                        (change)="update(control.key, $event.checked)"
-                        [formControlName]="control.key"></mat-checkbox>
-          <span fxFlex></span>
+            <div *ngIf="control.parent !== undefined; then embeddedBlock else regularBlock"></div>
+
+            <ng-template #embeddedBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title }}</span>
+              <div [formGroupName]="control.parent">
+                <mat-checkbox [fxFlex]="secondColFlex"
+                              (change)="update(control.parent + 'c' + control.key, $event.checked)"
+                              formControlName="{{ control.key }}"></mat-checkbox>
+              </div>
+              <span fxFlex></span>
+            </ng-template>
+
+            <ng-template #regularBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title }}</span>
+              <mat-checkbox [fxFlex]="secondColFlex"
+                            (change)="update(control.key, $event.checked)"
+                            formControlName="{{ control.key }}"></mat-checkbox>
+              <span fxFlex></span>
+            </ng-template>
+
           </ng-container>
 
           <ng-container *ngIf="control.type === 'radio'">
-            <span [fxFlex]="firstColFlex">{{ control.title}}</span>
-            <mat-radio-group [fxFlex]="secondColFlex"
-                             fxLayoutGap="12px"
-                             (change)="update(control.key, $event['value'])"
-                             formControlName="{{ control.key }}">
-              <mat-radio-button *ngFor="let option of control.options" value="{{ option }}">
-                {{ option }}
-              </mat-radio-button>
-            </mat-radio-group>
-            <span fxFlex></span>
+
+            <div *ngIf="control.parent !== undefined; then embeddedBlock else regularBlock"></div>
+
+            <ng-template #embeddedBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title}}</span>
+
+              <div [formGroupName]="control.parent">
+                <mat-radio-group [fxFlex]="secondColFlex"
+                                 fxLayoutGap="12px"
+                                 (change)="update(control.parent + '.' + control.key, $event['value'])"
+                                 formControlName="{{ control.key }}">
+                  <mat-radio-button *ngFor="let option of control.options" value="{{ option }}">
+                    {{ option }}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+
+              <span fxFlex></span>
+            </ng-template>
+
+            <ng-template #regularBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title}}</span>
+
+              <mat-radio-group [fxFlex]="secondColFlex"
+                               fxLayoutGap="12px"
+                               (change)="update(control.key, $event['value'])"
+                               formControlName="{{ control.key }}">
+                <mat-radio-button *ngFor="let option of control.options" value="{{ option }}">
+                  {{ option }}
+                </mat-radio-button>
+              </mat-radio-group>
+
+              <span fxFlex></span>
+            </ng-template>
           </ng-container>
 
           <ng-container *ngIf="control.type === 'slider'">
-            <span [fxFlex]="firstColFlex">{{ control.title }}</span>
-            <mat-slider formControlName="{{ keyToFormControlName(control) }}"
-                        [fxFlex]="secondColFlex"
-                        [min]="control.range[0]"
-                        [max]="control.range[1]"
-                        [step]="control.range[2]"
-                        (input)="update(control.key, $event.value, control.idx)">
-            </mat-slider>
-            <span fxFlex>{{ windowValue(control.key, control.idx) }}</span>
+
+            <div *ngIf="control.parent !== undefined; then sliderBlock1 else sliderBlock2"></div>
+
+            <ng-template #sliderBlock1>
+              <span [fxFlex]="firstColFlex">{{ control.title }}</span>
+              <div [formGroupName]="control.parent" [fxFlex]="secondColFlex">
+                <mat-slider formControlName="{{ keyToFormControlName(control) }}"
+                            fxFlex
+                            [min]="control.range[0]"
+                            [max]="control.range[1]"
+                            [step]="control.range[2]"
+                            (input)="update(control.parent + '.' + control.key, $event.value, control.idx)">
+                </mat-slider>
+              </div>
+              <span fxFlex>{{ windowValue(control.parent + '.' + control.key, control.idx) }}</span>
+            </ng-template>
+
+            <ng-template #sliderBlock2>
+              <span [fxFlex]="firstColFlex">{{ control.title }}</span>
+              <mat-slider formControlName="{{ keyToFormControlName(control) }}"
+                          [fxFlex]="secondColFlex"
+                          [min]="control.range[0]"
+                          [max]="control.range[1]"
+                          [step]="control.range[2]"
+                          (input)="update(control.key, $event.value, control.idx)">
+              </mat-slider>
+              <span fxFlex>{{ windowValue(control.key, control.idx) }}</span>
+            </ng-template>
           </ng-container>
 
           <ng-container *ngIf="control.type === 'select'">
@@ -73,20 +146,7 @@
           </ng-container>
         </div>
 
-        <div fxFlex fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-          <hr fxFlex/>
-          <h2>Menu Navigation</h2>
-          <hr fxFlex/>
-        </div>
 
-        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="12px">
-          <button mat-raised-button color="primary" (click)="upPressed()">Up</button>
-          <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <button mat-raised-button color="primary" (click)="leftPressed()">Left</button>
-            <button mat-raised-button color="primary" (click)="rightPressed()">Right</button>
-          </div>
-          <button mat-raised-button color="primary" (click)="downPressed()">Down</button>
-        </div>
       </div>
 
 

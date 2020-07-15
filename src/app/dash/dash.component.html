@@ -29,32 +29,33 @@
 
     <g id="indicators">
       <!-- MILES -->
-      <text [attr.x]="this.halfDimension / 5 + 15"
-            [attr.y]="2 * this.meterDimension / 3 - 25"
+      <text [attr.x]="halfDimension / 5 + 15"
+            [attr.y]="2 * meterDimension / 3 - 25"
             class="right-anchor">
-        <tspan font-size="12pt" [attr.fill]="colors.white">{{ totalMileage }}</tspan>
+        <tspan font-size="12pt" [attr.fill]="colors.white">{{ data.totalMileage | number:'1.0-0' }}</tspan>
         <tspan font-size="10pt" [attr.fill]="colors.gray" class="words">&nbsp;{{ distanceUnits }}</tspan>
       </text>
 
       <!-- COMPASS -->
-      <text [attr.x]="11 * this.meterDimension / 12"
-            [attr.y]="2 * this.meterDimension / 3 - 25"
+      <text [attr.x]="11 * meterDimension / 12"
+            [attr.y]="2 * meterDimension / 3 - 25"
             [attr.fill]="colors.white"
             font-size="12pt"
             class="left-anchor">
-        {{ compass }}
+        {{ data.compass }}
       </text>
 
       <g id="topLeftIndicators"
          [style.transform]="'translateX(' +  (2 * halfDimension / 6 + 10) + 'px) translateY(' + indicatorY0 + 'px)'">
-<!--        <rect x="0"-->
-<!--              y="0"-->
-<!--              [attr.width]="indicatorWidth"-->
-<!--              [attr.height]="indicatorHeight"-->
-<!--              fill="yellow"-->
-<!--              fill-opacity="0.5"></rect>-->
-        <image *ngIf="leftIndicator"
-               [ngClass]="{ 'blinker': leftIndicator }"
+        <!--        <rect x="0"-->
+        <!--              y="0"-->
+        <!--              [attr.width]="indicatorWidth"-->
+        <!--              [attr.height]="indicatorHeight"-->
+        <!--              fill="yellow"-->
+        <!--              fill-opacity="0.5"></rect>-->
+
+        <image *ngIf="data.indicators.leftTurn"
+               [ngClass]="{ 'blinker': data.indicators.leftTurn }"
                [attr.x]="indicatorWidth - 20"
                [attr.y]="8"
                width="15"
@@ -63,15 +64,15 @@
 
       <g id="topRightIndicators"
          [style.transform]="'translateX(' + 6 * halfDimension / 5 + 'px) translateY(' + indicatorY0 + 'px)'">
-<!--        <rect x="0"-->
-<!--              y="0"-->
-<!--              [attr.width]="indicatorWidth"-->
-<!--              [attr.height]="indicatorHeight"-->
-<!--              fill="yellow"-->
-<!--              fill-opacity="0.5"></rect>-->
+        <!--        <rect x="0"-->
+        <!--              y="0"-->
+        <!--              [attr.width]="indicatorWidth"-->
+        <!--              [attr.height]="indicatorHeight"-->
+        <!--              fill="yellow"-->
+        <!--              fill-opacity="0.5"></rect>-->
 
-        <image *ngIf="rightIndicator"
-               [ngClass]="{ 'blinker': rightIndicator }"
+        <image *ngIf="data.indicators.rightTurn"
+               [ngClass]="{ 'blinker': data.indicators.rightTurn }"
                [attr.x]="10"
                [attr.y]="8"
                width="15"
@@ -88,7 +89,7 @@
               class="right-anchor"
               [attr.x]="4 * meterDimension / 5 + 30"
               [attr.y]="2 * meterDimension / 3 - 2">
-          <tspan [attr.fill]="colors.white" font-size="12pt">{{ fuelDistance }}</tspan>
+          <tspan [attr.fill]="colors.white" font-size="12pt">{{ data.fuelDistance | number:'1.0-0' }}</tspan>
           <tspan [attr.fill]="colors.gray" font-size="8pt" class="words">&nbsp;{{ distanceUnits }}</tspan>
         </text>
       </g>
@@ -112,7 +113,7 @@
               stroke-width="3"/>
 
         <!-- The main line -->
-        <line [attr.x1]="fuelLevelX(fuelLevel) "
+        <line [attr.x1]="fuelLevelX(data.fuelLevel) "
               [attr.y1]="fuelBarTickY0 + 6"
               [attr.x2]="fuelLevelX(0) "
               [attr.y2]="fuelBarTickY0 + 6"
@@ -128,9 +129,9 @@
               stroke-width="2"/>
 
         <!-- The right red bar -->
-        <line [attr.x1]="fuelLevelX(fuelLevel)"
+        <line [attr.x1]="fuelLevelX(data.fuelLevel)"
               [attr.y1]="fuelBarTickY0 - 2"
-              [attr.x2]="fuelLevelX(fuelLevel)"
+              [attr.x2]="fuelLevelX(data.fuelLevel)"
               [attr.y2]="fuelBarTickY0 + 14"
               [attr.stroke]="colors.red1"
               stroke-width="2"/>
@@ -148,7 +149,7 @@
               [attr.x]="meterDimension / 7"
               [attr.y]="2 * meterDimension / 3 - 3"
               font-size="12pt">
-          {{ oilTemp }}
+          {{ data.oilTemp | number:'1.0-0' }}
         </text>
 
         <text [attr.fill]="colors.white"
@@ -191,7 +192,7 @@
               stroke-width="4"/>
 
         <!-- The main line -->
-        <line [attr.x1]="oilTempBarX(oilTemp) "
+        <line [attr.x1]="oilTempBarX(data.oilTemp) "
               [attr.y1]="fuelBarTickY0 + 6"
               [attr.x2]="oilTempBarX(oilTempMin) "
               [attr.y2]="fuelBarTickY0 + 6"
@@ -207,9 +208,9 @@
               stroke-width="2"/>
 
         <!-- The right red bar -->
-        <line [attr.x1]="oilTempBarX(oilTemp)"
+        <line [attr.x1]="oilTempBarX(data.oilTemp)"
               [attr.y1]="fuelBarTickY0 - 2"
-              [attr.x2]="oilTempBarX(oilTemp)"
+              [attr.x2]="oilTempBarX(data.oilTemp)"
               [attr.y2]="fuelBarTickY0 + 14"
               [attr.stroke]="colors.red1"
               stroke-width="2"/>
@@ -239,8 +240,8 @@
               [attr.x2]="primaryTabXY(i).x2"
               [attr.y1]="primaryTabY"
               [attr.y2]="primaryTabY"
-              [attr.stroke]="primaryTabColor(tab.primary)"
-              [attr.stroke-opacity]="primaryTabOpacity(tab.primary)"
+              [attr.stroke]="primaryTabColor(tab.key)"
+              [attr.stroke-opacity]="primaryTabOpacity(tab.key)"
               stroke-width="6"/>
       </g>
 
@@ -248,77 +249,136 @@
       <g id="selectedPrimaryMenu" style="transform-origin: center center"
          [style.transform]="'translateX(' + menuX0 + 'px) translateY(' + menuY0 + 'px)'">
 
-        <!--        <rect x="0"-->
-        <!--              y="0"-->
-        <!--              [attr.width]="menuWidth"-->
-        <!--              [attr.height]="menuHeight"-->
-        <!--              fill-opacity="0"-->
-        <!--              stroke="white"-->
-        <!--              stroke-dasharray="5, 5"></rect>-->
+<!--        <rect x="0"-->
+<!--              y="0"-->
+<!--              [attr.width]="menuWidth"-->
+<!--              [attr.height]="menuHeight"-->
+<!--              fill-opacity="0"-->
+<!--              stroke="white"-->
+<!--              stroke-dasharray="5, 5"></rect>-->
 
-        <g id="activeMenuOption" mask="url(#selectedTabMask)">
+                <g id="activeMenuOption" mask="url(#selectedTabMask)">
+<!--        <g id="activeMenuOption">-->
 
           <g *ngFor="let secondary of activeTabSections; let i = index;"
              [attr.style]="'transform: translateY(' + ((i * menuHeight) - menuScroll) + 'px)'">
 
-            <!--            <rect x="0"-->
-            <!--                  y="0"-->
-            <!--                  [attr.width]="menuWidth"-->
-            <!--                  [attr.height]="menuHeight"-->
-            <!--                  fill-opacity="0.2"-->
-            <!--                  stroke="white"-->
-            <!--                  stroke-dasharray="5, 5"></rect>-->
+<!--            <rect x="0"-->
+<!--                  y="0"-->
+<!--                  [attr.width]="menuWidth"-->
+<!--                  [attr.height]="menuHeight"-->
+<!--                  fill-opacity="0.2"-->
+<!--                  stroke="white"-->
+<!--                  stroke-dasharray="5, 5"></rect>-->
 
-            <text [attr.x]="this.menuWidth / 2"
-                  [attr.y]="20"
-                  class="middle-anchor words"
-                  font-size="12pt"
-                  [attr.fill]="colors.red1">
-              {{ secondary.title }}
-            </text>
+            <g *ngIf="secondary.title">
+              <text [attr.x]="menuWidth / 2"
+                    [attr.y]="20"
+                    class="middle-anchor words"
+                    font-size="12pt"
+                    [attr.fill]="colors.red1">
+                {{ secondary.title }}
+              </text>
 
-            <line [attr.x1]="0"
-                  [attr.x2]="menuWidth"
-                  [attr.y1]="30"
-                  [attr.y2]="30"
-                  stroke-width="0.5"
-                  [attr.stroke]="colors.white"
-                  stroke-opacity="0.5"/>
+              <line [attr.x1]="0"
+                    [attr.x2]="menuWidth"
+                    [attr.y1]="30"
+                    [attr.y2]="30"
+                    stroke-width="0.5"
+                    [attr.stroke]="colors.white"
+                    stroke-opacity="0.5"/>
+            </g>
 
-            <g *ngFor="let row of tabRows(i); let j = index;">
+            <g *ngIf="secondary.type === 'audio'">
+              <image [attr.x]="menuWidth / 2 - 20"
+                     [attr.y]="menuHeight / 6"
+                     width="40"
+                     xlink:href="./assets/glyphs/broadcast-tower.svg"/>
 
-              <g *ngIf="row.type === 'metric'">
+              <text [attr.x]="menuWidth / 2 - 40"
+                    [attr.y]="menuHeight / 6 + 25"
+                    font-size="12pt"
+                    [attr.fill]="colors.white">{{ data.audio.wave | uppercase}}</text>
 
-                <text [attr.x]="10"
-                      [attr.y]="j * 30 + 50"
-                      [attr.fill]="colors.white"
-                      font-size="12pt"
-                      class="left-anchor words">
-                  {{ row.title }}
-                </text>
+              <text [attr.x]="menuWidth / 2"
+                    [attr.y]="menuHeight / 6 + 45"
+                    font-size="16pt"
+                    [attr.fill]="colors.white">{{ data.audio.station | number:'1.1-1' }}</text>
+            </g>
 
-                <text [attr.x]="menuWidth - 10"
-                      [attr.y]="j * 30 + 50"
-                      class="right-anchor">
-                  <tspan *ngIf="row.units !== 'time'"
-                         [attr.fill]="colors.white">{{ row.value | number:'1.1-1' }}</tspan>
-                  <tspan class="words" [attr.fill]="colors.gray" fill-opacity="0.5" *ngIf="row.units === 'dist'">
-                    &nbsp; {{ distanceUnits }}</tspan>
-                  <tspan class="words" [attr.fill]="colors.gray" fill-opacity="0.5" *ngIf="row.units === 'econ'">
-                    &nbsp; {{ econUnits }}</tspan>
-                  <tspan *ngIf="row.units === 'time'">
-                    <tspan [attr.fill]="colors.white">{{ toHours(row.value) }}
-                      <tspan [attr.fill]="colors.gray" fill-opacity="0.5" class="words">&nbsp;h&nbsp;&nbsp;</tspan>
+            <g *ngIf="secondary.type === 'header'">
+              <text [attr.x]="menuWidth / 2"
+                    [attr.y]="menuHeight / 2"
+                    font-size="12pt"
+                    class="words"
+                    [attr.fill]="colors.white">
+                <tspan *ngFor="let header of secondary.headers; let i = index" [attr.x]="menuWidth / 2"
+                       [attr.dy]="i * 18 + 'pt'">
+                  {{ header }}
+                </tspan>
+              </text>
+            </g>
+            <!-- If it has rows -->
+            <g *ngIf="secondary.type === 'rows'">
+              <g *ngFor="let row of tabRows(i); let j = index;">
+
+                <g *ngIf="row.type === 'metric'">
+
+                  <text [attr.x]="10"
+                        [attr.y]="j * 30 + 50"
+                        [attr.fill]="colors.white"
+                        font-size="12pt"
+                        class="left-anchor words">
+                    {{ row.title }}
+                  </text>
+
+                  <text [attr.x]="menuWidth - 10"
+                        [attr.y]="j * 30 + 50"
+                        class="right-anchor">
+
+                    <tspan *ngIf="row.units === 'dist' || row.units === 'econ'" [attr.fill]="colors.white">
+                      {{ windowValue(row.key) | number:'1.1-1' }}
                     </tspan>
-                    <tspan [attr.fill]="colors.white">{{ toMinuteOfHour(row.value) }}</tspan>
-                    <tspan [attr.fill]="colors.gray" fill-opacity="0.5" class="words">&nbsp;min</tspan>
-                  </tspan>
-                </text>
+
+                    <tspan *ngIf="row.units === 'none'" [attr.fill]="colors.white">
+                      <tspan *ngIf="row.decimals === 0">{{ windowValue(row.key) | number:'1.0-0' }}</tspan>
+                      <tspan *ngIf="row.decimals === 1">{{ windowValue(row.key) | number:'1.1-1' }}</tspan>
+                    </tspan>
+
+                    <tspan *ngIf="row.units === 'percent'" [attr.fill]="colors.white">
+                      {{ windowValue(row.key) | number:'1.0-0' }}
+                    </tspan>
+
+                    <tspan class="words"
+                           *ngIf="row.units === 'percent'"
+                           [attr.fill]="colors.gray"
+                           fill-opacity="0.5">
+                      %
+                    </tspan>
+
+                    <tspan class="words"
+                           [attr.fill]="colors.gray"
+                           fill-opacity="0.5"
+                           *ngIf="row.units === 'dist'">
+                      &nbsp; {{ distanceUnits }}
+                    </tspan>
+
+                    <tspan class="words" [attr.fill]="colors.gray" fill-opacity="0.5" *ngIf="row.units === 'econ'">
+                      &nbsp; {{ econUnits }}
+                    </tspan>
+
+                    <tspan *ngIf="row.units === 'time'">
+                      <tspan [attr.fill]="colors.white">{{ toHours(windowValue(row.key)) }}
+                        <tspan [attr.fill]="colors.gray" fill-opacity="0.5" class="words">&nbsp;h&nbsp;&nbsp;</tspan>
+                      </tspan>
+                      <tspan [attr.fill]="colors.white">{{ toMinuteOfHour(windowValue(row.key)) }}</tspan>
+                      <tspan [attr.fill]="colors.gray" fill-opacity="0.5" class="words">&nbsp;min</tspan>
+                    </tspan>
+                  </text>
+                </g>
               </g>
             </g>
           </g>
-
-
         </g>
       </g>
     </g>
@@ -327,7 +387,7 @@
     <g id="leftPeripherals" style="transform-origin: center center">
 
       <g id="bottomLeftPeripheral"
-         [style.transform]="'translateX(' + this.bottomLeftPeripheralX0 + 'px) translateY(' + this.bottomLeftPeripheralY0 + 'px)'">
+         [style.transform]="'translateX(' + bottomLeftPeripheralX0 + 'px) translateY(' + bottomLeftPeripheralY0 + 'px)'">
 
         <!--        <rect class="design-outline"-->
         <rect x="0"
@@ -351,19 +411,19 @@
           <!-- Underline -->
           <line [attr.x1]="0"
                 [attr.y1]="20"
-                [attr.x2]="this.leftPeripheralSectionWidth"
+                [attr.x2]="leftPeripheralSectionWidth"
                 [attr.y2]="20"
                 stroke-width="0.5"
                 stroke-opacity="0.5"
                 [attr.stroke]="colors.white"/>
 
           <text id="oilPressureLabel"
-                [attr.x]="this.leftPeripheralSectionWidth / 2"
+                [attr.x]="leftPeripheralSectionWidth / 2"
                 [attr.y]="40"
                 font-size="18pt"
                 [attr.fill]="colors.white"
                 class="middle-anchor">
-            <tspan font-size="18pt">{{ oilPressure }}</tspan>
+            <tspan font-size="18pt">{{ data.oilPressure | number:'1.0-0' }}</tspan>
             <tspan font-size="12pt">&nbsp;psi</tspan>
           </text>
 
@@ -380,15 +440,15 @@
 
             <!-- Moving bar -->
             <line [attr.x1]="oilPressureBarX(oilPressureMin)"
-                  [attr.x2]="oilPressureBarX(oilPressure)"
+                  [attr.x2]="oilPressureBarX(data.oilPressure)"
                   [attr.y1]="oilPressureBarY0"
                   [attr.y2]="oilPressureBarY0"
                   stroke-width="6"
                   [attr.stroke]="colors.white"/>
 
             <!-- Moving red marker -->
-            <line [attr.x1]="oilPressureBarX(oilPressure)"
-                  [attr.x2]="oilPressureBarX(oilPressure)"
+            <line [attr.x1]="oilPressureBarX(data.oilPressure)"
+                  [attr.x2]="oilPressureBarX(data.oilPressure)"
                   [attr.y1]="oilPressureBarY0 - 5"
                   [attr.y2]="oilPressureBarY0 + 5"
                   stroke-width="2"
@@ -396,7 +456,7 @@
 
             <!-- Moving red marker -->
             <line [attr.x1]="oilPressureBarX(oilPressureMin)"
-                  [attr.x2]="oilPressureBarX(min(oilPressureDanger, oilPressure))"
+                  [attr.x2]="oilPressureBarX(min(oilPressureDanger, data.oilPressure))"
                   [attr.y1]="oilPressureBarY0"
                   [attr.y2]="oilPressureBarY0"
                   stroke-width="6"
@@ -503,7 +563,7 @@
         <g id="tirePressures" *ngFor="let _ of [0, 1, 2, 3]; let i = index;">
 
           <g [id]="'tire' + i"
-             [ngClass]="{ 'tire-warning': tirePressure[i] < tireDangerLow }">
+             [ngClass]="{ 'tire-warning': data.tirePressure[i] < tireDangerLow }">
             <rect [attr.x]="tireXY(i).x"
                   [attr.y]="tireXY(i).y"
                   [attr.width]="tireWidth"
@@ -527,7 +587,7 @@
 
                 [attr.x]="tireXY(i).x + ((i < 2) ?  -10 : 15)"
                 [attr.y]="tireXY(i).y + tireHeight / 2">
-            {{ tirePressure[i] }}
+            {{ data.tirePressure[i] | number:'1.0-0' }}
           </text>
         </g>
       </g>
@@ -676,24 +736,24 @@
 
       <g id="tachometerLabels" [attr.transform]="'translate(0, ' + -halfDimension + ')'">
 
-        <text [attr.x]="isInDrive ? halfDimension - 30 : halfDimension"
+        <text [attr.x]="isInGear ? halfDimension - 30 : halfDimension"
               class="middle-anchor words"
               [attr.y]="meterDimension + 20"
               [attr.fill]="colors.white"
-              font-size="140pt">{{ prndl }}</text>
+              font-size="140pt">{{ data.gear }}</text>
 
-        <text *ngIf="isInDrive"
-              class="middle-anchor words"
-              [attr.x]="70 + halfDimension"
+        <text *ngIf="isInGear"
+              class="left-anchor words"
+              [attr.x]="55 + halfDimension"
               [attr.y]="meterDimension + 20"
               [attr.fill]="colors.white"
-              font-size="70pt">{{ gear }}</text>
+              font-size="66pt">{{ data.gearNumber | number:'1.0-0' }}</text>
 
         <text [attr.x]="4 * halfDimension / 3 - 10"
               [attr.y]="5 * meterDimension / 4"
               class="left-anchor"
               [attr.fill]="colors.white"
-              font-size="120pt">{{ speed }}</text>
+              font-size="120pt">{{ data.speed | number:'1.0-0' }}</text>
 
         <text [attr.y]="meterDimension + 50"
               class="right-anchor"

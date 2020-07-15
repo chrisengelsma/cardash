@@ -1,19 +1,25 @@
-export type PrndlType = | 'P' | 'R' | 'N' | 'D' | 'L';
+export type GearType = | 'P' | 'R' | 'N' | 'D' | 'L' | 'M';
 
-export type UnitsType = | 'imperial' | 'metric';
+export type UnitType = | 'imperial' | 'metric';
 
 export type PrimaryTabItemType =
-  | 'Trip Computer'
-  | 'Performance'
-  | 'Audio'
-  | 'Maintenance'
-  | 'Options'
-  | 'Simplify';
+  | 'tripComputer'
+  | 'performance'
+  | 'audio'
+  | 'maintenance'
+  | 'options'
+  | 'simplify';
 
 export type SecondaryTabItemType =
-  | 'None'
-  | 'Trip 1'
-  | 'Trip 2';
+  | 'none'
+  | 'trip1'
+  | 'gforce'
+  | 'performanceTimer'
+  | 'lapTimer';
+
+export type RadioFrequencyType =
+  | 'am'
+  | 'fm';
 
 export type CardinalDirectionType =
   | 'N'

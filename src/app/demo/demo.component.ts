@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
@@ -14,25 +14,53 @@ export class DemoComponent implements OnInit {
     { key: 'speed', default_: 0 },
     { key: 'fuelLevel', default_: 100 },
     { key: 'fuelDistance', default_: 0 },
-    { key: 'prndl', default_: 'P' },
+    { key: 'gear', default_: 'P' },
     { key: 'oilTemp', default_: 200 },
     { key: 'oilPressure', default_: 28 },
     { key: 'outsideTemp', default_: 75 },
-    { key: 'gear', default_: 1 },
-    { key: 'units', default_: 'imperial' },
+    { key: 'gearNumber', default_: 1 },
+    { key: 'unit', default_: 'imperial' },
     { key: 'tirePressure', default_: [ 36, 36, 36, 36 ] },
     { key: 'totalMileage', default_: 0 },
     { key: 'oilPressure', default_: 28 },
-    { key: 'selectedPrimaryTab', default_: 'Trip Computer' },
-    { key: 'selectedSecondaryTab', default_: 'Trip 1' },
-    { key: 'tripComputer', default_: 0 },
+    { key: 'selectedPrimaryTab', default_: 'tripComputer' },
+    { key: 'selectedSecondaryTab', default_: 'trip1' },
     { key: 'compass', default_: 'N' },
-    { key: 'externalLamp', default_: false },
-    { key: 'headlamp', default_: false },
-    { key: 'autoHeadlamp', default_: false },
-    { key: 'highBeam', default_: false },
-    { key: 'leftIndicator', default_: false },
-    { key: 'rightIndicator', default_: false },
+    {
+      key: 'tripComputer', default_: {
+        trip1: {
+          distance: 0,
+          fuelEconomy: 0,
+          time: 0
+        }
+      }
+    },
+    {
+      key: 'maintenance', default_: {
+        oil: 100,
+        transmissionFluid: 100,
+        revs: 0,
+        hours: 0,
+        idleHours: 0,
+      }
+    },
+    {
+      key: 'audio', default_: {
+        wave: 'fm',
+        station: 89.1,
+      }
+    },
+    {
+      key: 'indicators', default_: {
+        externalLights: false,
+        headlights: false,
+        autoHeadlights: false,
+        leftTurn: false,
+        rightTurn: false,
+        highBeam: false,
+        mil: false,
+      }
+    },
   ];
 
   authenticated: boolean = false;

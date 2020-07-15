@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { CardinalDirectionType, PrimaryTabItemType, PrndlType, SecondaryTabItemType, UnitsType } from '../../models';
+import { CardinalDirectionType, GearType, PrimaryTabItemType, UnitType } from '../../models';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -11,59 +11,63 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ControlsComponent implements OnInit, OnChanges {
 
   @Input() relevantKeys: { key: string, default_: any }[] = [];
-  menu: { primary: PrimaryTabItemType, secondary: SecondaryTabItemType[] }[] = [
+
+  menu: { primary: PrimaryTabItemType, secondary: string[] }[] = [
     {
-      primary: 'Trip Computer',
-      secondary: [ 'Trip 1', 'Trip 2' ]
+      primary: 'tripComputer',
+      secondary: [ 'trip1' ]
     },
     {
-      primary: 'Performance',
-      secondary: [ 'None' ]
+      primary: 'performance',
+      secondary: [ 'gforce', 'performanceTimer', 'lapTimer' ]
     },
     {
-      primary: 'Audio',
-      secondary: [ 'None' ]
+      primary: 'audio',
+      secondary: [ 'audio' ]
     },
     {
-      primary: 'Maintenance',
-      secondary: [ 'None' ]
+      primary: 'maintenance',
+      secondary: [ 'fluidLife', 'engineLife' ]
     },
     {
-      primary: 'Options',
-      secondary: [ 'None' ]
+      primary: 'options',
+      secondary: [ 'none' ]
     },
     {
-      primary: 'Simplify',
-      secondary: [ 'None' ]
+      primary: 'simplify',
+      secondary: [ 'none' ]
     }
   ];
 
   readonly firstColFlex: number = 30;
   readonly secondColFlex: number = 50;
 
-  readonly prndlList: PrndlType[] = [ 'P', 'R', 'N', 'D', 'L' ];
+  readonly gearList: GearType[] = [ 'P', 'R', 'N', 'D', 'L', 'M' ];
   readonly directionList: CardinalDirectionType[] = [ 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' ];
-  readonly unitsList: UnitsType[] = [ 'imperial', 'metric' ];
+  readonly unitList: UnitType[] = [ 'imperial', 'metric' ];
 
   readonly controls: any[] = [
     { title: 'Units', type: 'header' },
 
-    { title: 'Units', key: 'units', type: 'radio', options: this.unitsList },
+    { title: 'Units', key: 'unit', type: 'radio', options: this.unitList },
 
     { title: 'Indicators', type: 'header' },
 
     { title: 'Total Mileage', key: 'totalMileage', type: 'slider', range: [ 0, 120000, 0.1 ] },
-    { title: 'Left Indicator', key: 'leftIndicator', type: 'checkbox' },
-    { title: 'Right Indicator', key: 'rightIndicator', type: 'checkbox' },
-    { title: 'High Beam', key: 'highBeam', type: 'checkbox' },
-    { title: 'Headlamp', key: 'headlamp', type: 'checkbox' },
-    { title: 'Auto Headlamp', key: 'autoHeadlamp', type: 'checkbox' },
     { title: 'Compass', key: 'compass', type: 'select', options: this.directionList },
+
+    { title: 'Left Turn', key: 'leftTurn', parent: 'indicators', type: 'checkbox' },
+    { title: 'Right Turn', key: 'rightTurn', parent: 'indicators', type: 'checkbox' },
+    { title: 'High Beam', key: 'highBeam', parent: 'indicators', type: 'checkbox' },
+    { title: 'External Headlights', key: 'externalLights', parent: 'indicators', type: 'checkbox' },
+    { title: 'Headlights', key: 'headlights', parent: 'indicators', type: 'checkbox' },
+    { title: 'Auto Headlights', key: 'autoHeadlights', parent: 'indicators', type: 'checkbox' },
+    { title: 'Malfunction', key: 'mil', parent: 'indicators', type: 'checkbox' },
 
     { title: 'Tachometer', type: 'header' },
 
-    { title: 'PRNDL', key: 'prndl', type: 'select', options: this.prndlList },
-    { title: 'Gear', key: 'gear', type: 'slider', range: [ 1, 10, 1 ] },
+    { title: 'Gear', key: 'gear', type: 'select', options: this.gearList },
+    { title: 'Gear Number', key: 'gearNumber', type: 'slider', range: [ 1, 10, 1 ] },
     { title: 'RPM', key: 'rpm', type: 'slider', range: [ 0, 16000, 0.1 ] },
     { title: 'Speed', key: 'speed', type: 'slider', range: [ 0, 120, 0.1 ] },
 
@@ -84,6 +88,26 @@ export class ControlsComponent implements OnInit, OnChanges {
     { title: 'Front Right Tire Pressure', key: 'tirePressure', type: 'slider', range: [ 0, 40, 0.1 ], idx: 3 },
 
     { title: 'Oil Pressure', key: 'oilPressure', type: 'slider', range: [ 0, 80, 0.1 ] },
+
+    { title: 'Trip Computer - Trip 1', type: 'header' },
+
+    { title: 'Distance', key: 'trip1.distance', parent: 'tripComputer', type: 'slider', range: [ 0, 10000, 0.1 ] },
+    { title: 'Fuel Economy', key: 'trip1.fuelEconomy', parent: 'tripComputer', type: 'slider', range: [ 0, 40, 0.1 ] },
+    { title: 'Time', key: 'trip1.time', parent: 'tripComputer', type: 'slider', range: [ 0, 10000, 0.1 ] },
+
+
+    { title: 'Audio', type: 'header' },
+
+    { title: 'Wave', key: 'wave', parent: 'audio', type: 'radio', options: [ 'fm', 'am' ] },
+    { title: 'Station', key: 'station', parent: 'audio', type: 'slider', range: [ 89.1, 107.5, 0.2 ] },
+
+    { title: 'Maintenance', type: 'header' },
+
+    { title: 'Engine Oil', key: 'oil', parent: 'maintenance', type: 'slider', range: [ 0, 100, 0.1 ] },
+    { title: 'Transmission Fluid', key: 'transmissionFluid', parent: 'maintenance', type: 'slider', range: [ 0, 100, 0.1 ] },
+    { title: 'Rev\'s/1000', key: 'revs', parent: 'maintenance', type: 'slider', range: [ 0, 2000, 0.1 ] },
+    { title: 'Hours', key: 'hours', parent: 'maintenance', type: 'slider', range: [ 0, 1000, 0.1 ] },
+    { title: 'Idle Hours', key: 'idleHours', parent: 'maintenance', type: 'slider', range: [ 0, 1000, 0.1 ] },
   ];
 
   private _form: FormGroup;
@@ -113,8 +137,15 @@ export class ControlsComponent implements OnInit, OnChanges {
   }
 
   windowValue(key: string, idx?: number) {
-    if (idx !== null) {
+    if (key && idx !== null && idx !== undefined) {
       return window[key][idx];
+    }
+    const keys = key.split('.');
+    if (keys.length === 3) {
+      return window[keys[0]][keys[1]][keys[2]];
+    }
+    if (keys.length === 2) {
+      return window[keys[0]][keys[1]];
     }
     return window[key];
   }
@@ -165,11 +196,16 @@ export class ControlsComponent implements OnInit, OnChanges {
 
   update(key: string, value: any, idx?: number) {
     if (idx === null || idx === undefined) {
-      window[key] = value;
+      const split = key.split('.');
+
+      if (split.length === 3) {
+        window[split[0]][split[1]][split[2]] = value;
+      } else {
+        window[key] = value;
+      }
     } else {
       window[key][idx] = value;
     }
-    window.dispatchEvent(new CustomEvent(key, { detail: window[key] }));
   }
 
   private initForm(): void {
@@ -179,27 +215,47 @@ export class ControlsComponent implements OnInit, OnChanges {
 
     this._form = this._formBuilder.group({
       rpm: [ window.rpm ],
-      prndl: [ window.prndl ],
       speed: [ window.speed ],
       gear: [ window.gear ],
-      units: [ window.units ],
+      gearNumber: [ window.gearNumber ],
+      unit: [ window.unit ],
       fuelLevel: [ window.fuelLevel ],
       outsideTemp: [ window.outsideTemp ],
       oilTemp: [ window.oilTemp ],
       oilPressure: [ window.oilPressure ],
       fuelDistance: [ window.fuelDistance ],
-      autoHeadlamp: [ window.autoHeadlamp ],
-      externalLamp: [ window.externalLamp ],
-      headlamp: [ window.headlamp ],
-      highBeam: [ window.highBeam ],
-      leftIndicator: [ window.leftIndicator ],
-      rightIndicator: [ window.rightIndicator ],
       compass: [ window.compass ],
+      gforce: [ window.gforce ],
+      totalMileage: [ window.totalMileage ],
+      tripComputer: this._formBuilder.group({
+        'trip1.distance': [ window.tripComputer.trip1.distance ],
+        'trip1.fuelEconomy': [ window.tripComputer.trip1.fuelEconomy ],
+        'trip1.time': [ window.tripComputer.trip1.time ],
+      }),
+      maintenance: this._formBuilder.group({
+        oil: [ window.maintenance.oil ],
+        transmissionFluid: [ window.maintenance.transmissionFluid ],
+        revs: [ window.maintenance.revs ],
+        hours: [ window.maintenance.hours ],
+        idleHours: [ window.maintenance.idleHours ],
+      }),
+      audio: this._formBuilder.group({
+        wave: [ window.audio.wave ],
+        station: [ window.audio.station ],
+      }),
+      indicators: this._formBuilder.group({
+        autoHeadlights: [ window.indicators.autoHeadlights ],
+        externalLights: [ window.indicators.externalLights ],
+        headlights: [ window.indicators.headlights ],
+        highBeam: [ window.indicators.highBeam ],
+        mil: [ window.indicators.mil ],
+        leftTurn: [ window.indicators.leftTurn ],
+        rightTurn: [ window.indicators.rightTurn ],
+      }),
       tirePressure0: [ window.tirePressure[0] ],
       tirePressure1: [ window.tirePressure[1] ],
       tirePressure2: [ window.tirePressure[2] ],
       tirePressure3: [ window.tirePressure[3] ],
-      totalMileage: [ window.totalMileage ],
     });
   }
 }
