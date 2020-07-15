@@ -42,7 +42,7 @@ export class ControlsComponent implements OnInit, OnChanges {
   readonly firstColFlex: number = 30;
   readonly secondColFlex: number = 50;
 
-  readonly gearList: GearType[] = [ 'P', 'R', 'N', 'D', 'L', 'M' ];
+  readonly gearList: GearType[] = [ 'P', 'R', 'N', 'D', 'M' ];
   readonly directionList: CardinalDirectionType[] = [ 'N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW' ];
   readonly unitList: UnitType[] = [ 'imperial', 'metric' ];
 
@@ -62,6 +62,9 @@ export class ControlsComponent implements OnInit, OnChanges {
     { title: 'External Headlights', key: 'externalLights', parent: 'indicators', type: 'checkbox' },
     { title: 'Headlights', key: 'headlights', parent: 'indicators', type: 'checkbox' },
     { title: 'Auto Headlights', key: 'autoHeadlights', parent: 'indicators', type: 'checkbox' },
+    { title: 'Battery', key: 'battery', parent: 'indicators', type: 'checkbox' },
+    { title: 'Door Ajar', key: 'doorAjar', parent: 'indicators', type: 'checkbox' },
+    { title: 'Oil Pressure', key: 'oilPressure', parent: 'indicators', type: 'checkbox' },
     { title: 'Malfunction', key: 'mil', parent: 'indicators', type: 'checkbox' },
 
     { title: 'Tachometer', type: 'header' },
@@ -251,6 +254,9 @@ export class ControlsComponent implements OnInit, OnChanges {
         headlights: [ window.indicators.headlights ],
         highBeam: [ window.indicators.highBeam ],
         mil: [ window.indicators.mil ],
+        battery: [ window.indicators.battery ],
+        oilPressure: [ window.indicators.oilPressure ],
+        doorAjar: [ window.indicators.doorAjar ],
         leftTurn: [ window.indicators.leftTurn ],
         rightTurn: [ window.indicators.rightTurn ],
       }),

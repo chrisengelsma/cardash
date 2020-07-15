@@ -1,4 +1,4 @@
-export type GearType = | 'P' | 'R' | 'N' | 'D' | 'L' | 'M';
+export type GearType = | 'P' | 'R' | 'N' | 'D' | 'M';
 
 export type UnitType = | 'imperial' | 'metric';
 

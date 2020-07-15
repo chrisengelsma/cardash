@@ -39,6 +39,9 @@ export class DashComponent implements OnInit, OnDestroy {
       headlights: false,
       autoHeadlights: false,
       highBeam: false,
+      battery: false,
+      doorAjar: false,
+      oilPressure: false,
     },
     tripComputer: {
       trip1: {
@@ -229,7 +232,13 @@ export class DashComponent implements OnInit, OnDestroy {
     {
       key: 'simplify',
       primary: 'Simplify',
-      secondary: []
+      secondary: [
+        {
+          key: 'simplify',
+          type: 'header',
+          headers: [ 'Press Center Button', 'to Simplify Display' ],
+        }
+      ]
     }
   ];
 

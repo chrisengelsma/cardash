@@ -56,6 +56,9 @@ export interface IDashboardData {
     highBeam?: boolean;
     leftTurn?: boolean;
     rightTurn?: boolean;
+    battery?: boolean;
+    oilPressure?: boolean;
+    doorAjar?: boolean;
     mil?: boolean;
   };
   tripComputer?: {
@@ -112,6 +115,9 @@ declare global {
       highBeam?: boolean;
       leftTurn?: boolean;
       rightTurn?: boolean;
+      battery?: boolean;
+      oilPressure?: boolean;
+      doorAjar?: boolean;
       mil?: boolean;
     };
     tripComputer?: {

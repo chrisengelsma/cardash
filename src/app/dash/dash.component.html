@@ -57,32 +57,32 @@
         <image *ngIf="data.indicators.externalLights"
                [attr.x]="0"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/externalLights.svg"/>
 
         <image *ngIf="data.indicators.headlights"
-               [attr.x]="20"
+               [attr.x]="25"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/headlights.svg"/>
 
         <image *ngIf="data.indicators.autoHeadlights"
-               [attr.x]="40"
+               [attr.x]="50"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/autoHeadlights.svg"/>
 
         <image *ngIf="data.indicators.highBeam"
-               [attr.x]="60"
+               [attr.x]="75"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/highBeam.svg"/>
 
         <image *ngIf="data.indicators.leftTurn"
                [ngClass]="{ 'blinker': data.indicators.leftTurn }"
-               [attr.x]="indicatorWidth - 20"
+               [attr.x]="indicatorWidth - 25"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/arrow-left.svg"/>
 
       </g>
@@ -98,16 +98,34 @@
 
         <image *ngIf="data.indicators.rightTurn"
                [ngClass]="{ 'blinker': data.indicators.rightTurn }"
-               [attr.x]="10"
+               [attr.x]="5"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/arrow-right.svg"/>
 
         <image *ngIf="data.indicators.mil"
                [attr.x]="30"
                [attr.y]="8"
-               width="15"
+               width="20"
                xlink:href="./assets/glyphs/malfunction.svg"/>
+
+        <image *ngIf="data.indicators.battery"
+               [attr.x]="indicatorWidth - 25"
+               [attr.y]="8"
+               width="20"
+               xlink:href="./assets/glyphs/battery.svg" />
+
+        <image *ngIf="data.indicators.doorAjar"
+               [attr.x]="indicatorWidth - 50"
+               [attr.y]="8"
+               width="20"
+               xlink:href="./assets/glyphs/door-ajar.svg" />
+
+        <image *ngIf="data.indicators.oilPressure"
+               [attr.x]="indicatorWidth - 75"
+               [attr.y]="8"
+               width="20"
+               xlink:href="./assets/glyphs/oil-can.svg" />
       </g>
 
     </g>
@@ -280,27 +298,27 @@
       <g id="selectedPrimaryMenu" style="transform-origin: center center"
          [style.transform]="'translateX(' + menuX0 + 'px) translateY(' + menuY0 + 'px)'">
 
-<!--        <rect x="0"-->
-<!--              y="0"-->
-<!--              [attr.width]="menuWidth"-->
-<!--              [attr.height]="menuHeight"-->
-<!--              fill-opacity="0"-->
-<!--              stroke="white"-->
-<!--              stroke-dasharray="5, 5"></rect>-->
+        <!--        <rect x="0"-->
+        <!--              y="0"-->
+        <!--              [attr.width]="menuWidth"-->
+        <!--              [attr.height]="menuHeight"-->
+        <!--              fill-opacity="0"-->
+        <!--              stroke="white"-->
+        <!--              stroke-dasharray="5, 5"></rect>-->
 
-                <g id="activeMenuOption" mask="url(#selectedTabMask)">
-<!--        <g id="activeMenuOption">-->
+        <g id="activeMenuOption" mask="url(#selectedTabMask)">
+          <!--        <g id="activeMenuOption">-->
 
           <g *ngFor="let secondary of activeTabSections; let i = index;"
              [attr.style]="'transform: translateY(' + ((i * menuHeight) - menuScroll) + 'px)'">
 
-<!--            <rect x="0"-->
-<!--                  y="0"-->
-<!--                  [attr.width]="menuWidth"-->
-<!--                  [attr.height]="menuHeight"-->
-<!--                  fill-opacity="0.2"-->
-<!--                  stroke="white"-->
-<!--                  stroke-dasharray="5, 5"></rect>-->
+            <!--            <rect x="0"-->
+            <!--                  y="0"-->
+            <!--                  [attr.width]="menuWidth"-->
+            <!--                  [attr.height]="menuHeight"-->
+            <!--                  fill-opacity="0.2"-->
+            <!--                  stroke="white"-->
+            <!--                  stroke-dasharray="5, 5"></rect>-->
 
             <g *ngIf="secondary.title">
               <text [attr.x]="menuWidth / 2"
@@ -339,7 +357,7 @@
 
             <g *ngIf="secondary.type === 'header'">
               <text [attr.x]="menuWidth / 2"
-                    [attr.y]="menuHeight / 2"
+                    [attr.y]="menuHeight / 3"
                     font-size="12pt"
                     class="words"
                     [attr.fill]="colors.white">
@@ -626,7 +644,7 @@
     </g>
 
     <!-- TACHOMETER -->
-    <g id="tachometer" style="transform-origin: center center;" transform="scale(0.33)">
+    <g id="tachometer" style="transform-origin: center center;" transform="scale(0.35)">
 
       <g id="rpm"
          [attr.transform]="'translate(0, ' + halfDimension + ') scale(1, -1) translate(0, ' + -halfDimension + ')'">
@@ -702,6 +720,24 @@
                   cx="50%"
                   cy="50%"></circle>
 
+        </g>
+        <!-- V8 -->
+        <g id="v8" style="transform: scale(1, -1)">
+          <rect x="410"
+                y="-270"
+                width="80"
+                height="60"
+                rx="10"
+                stroke-width="4pt"
+                fill-opacity="0"
+                [attr.stroke]="colors.white"></rect>
+
+          <text x="450"
+                y="-240"
+                [attr.fill]="colors.white"
+                font-size="28pt"
+                class="words">V8
+          </text>
         </g>
 
         <g id="ticks" [attr.transform]="'translate(0 ' + -halfDimension + ')'">
@@ -794,6 +830,7 @@
           <tspan [attr.x]="meterDimension - 30" font-size="30pt">RPM</tspan>
           <tspan [attr.x]="meterDimension - 30" font-size="22pt" dy="30">/1000</tspan>
         </text>
+
 
         <image [attr.x]="40 + 2 * meterDimension / 3"
                [attr.y]="1.32 *  meterDimension "

@@ -58,6 +58,9 @@ export class DemoComponent implements OnInit {
         leftTurn: false,
         rightTurn: false,
         highBeam: false,
+        battery: false,
+        doorAjar: false,
+        oilPressure: false,
         mil: false,
       }
     },
