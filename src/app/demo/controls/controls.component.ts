@@ -200,6 +200,8 @@ export class ControlsComponent implements OnInit, OnChanges {
 
       if (split.length === 3) {
         window[split[0]][split[1]][split[2]] = value;
+      } else if (split.length === 2) {
+        window[split[0]][split[1]] = value;
       } else {
         window[key] = value;
       }

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   sodipodi:docname="car.svg"
+   xml:space="preserve"
+   style="enable-background:new 0 0 233.396 233.396;"
+   viewBox="0 0 233.396 233.396"
+   y="0px"
+   x="0px"
+   id="Capa_1"
+   version="1.1"><metadata
+   id="metadata1289"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /></cc:Work></rdf:RDF></metadata><defs
+   id="defs1287" /><sodipodi:namedview
+   inkscape:current-layer="Capa_1"
+   inkscape:window-maximized="0"
+   inkscape:window-y="23"
+   inkscape:window-x="0"
+   inkscape:cy="116.698"
+   inkscape:cx="116.698"
+   inkscape:zoom="3.1491543"
+   showgrid="false"
+   id="namedview1285"
+   inkscape:window-height="807"
+   inkscape:window-width="963"
+   inkscape:pageshadow="2"
+   inkscape:pageopacity="0"
+   guidetolerance="10"
+   gridtolerance="10"
+   objecttolerance="10"
+   borderopacity="1"
+   bordercolor="#666666"
+   pagecolor="#ffffff" />
+<g
+   style="fill:#ffffff"
+   id="g1252">
+	<path
+   style="fill:#ffffff"
+   id="path1236"
+   d="m 77.472,71.955 c -22.29,0 -22.29,33.677 -22.29,44.743 0,11.066 0,44.743 22.29,44.743 15.694,0 34.65,-19.959 34.65,-44.743 0,-24.784 -18.955,-44.743 -34.65,-44.743 z m 0,74.486 c -3.363,0 -7.29,-7.79 -7.29,-29.743 0,-21.953 3.927,-29.743 7.29,-29.743 6.727,0 19.65,12.56 19.65,29.743 0,17.183 -12.923,29.743 -19.65,29.743 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1238"
+   d="M 50.922,69.904 10.856,49.871 C 7.149,48.017 2.645,49.521 0.793,53.225 -1.059,56.93 0.442,61.435 4.146,63.287 L 44.213,83.32 c 1.077,0.538 2.222,0.793 3.349,0.793 2.751,0 5.4,-1.52 6.714,-4.147 1.852,-3.704 0.35,-8.21 -3.354,-10.062 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1240"
+   d="M 44.214,150.076 4.148,170.109 c -3.705,1.853 -5.207,6.358 -3.354,10.063 1.314,2.629 3.963,4.148 6.714,4.148 1.127,0 2.272,-0.255 3.348,-0.793 l 40.066,-20.032 c 3.705,-1.853 5.207,-6.357 3.354,-10.063 -1.852,-3.706 -6.358,-5.207 -10.062,-3.356 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1242"
+   d="m 7.501,124.198 h 33.454 c 4.143,0 7.5,-3.358 7.5,-7.5 0,-4.142 -3.357,-7.5 -7.5,-7.5 H 7.501 c -4.143,0 -7.5,3.358 -7.5,7.5 0,4.142 3.358,7.5 7.5,7.5 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1244"
+   d="m 155.923,71.955 c -15.695,0 -34.651,19.959 -34.651,44.743 0,24.784 18.956,44.743 34.651,44.743 22.289,0 22.29,-33.676 22.291,-44.743 0,-11.066 0,-44.743 -22.291,-44.743 z m 0,74.486 c -6.727,0 -19.651,-12.56 -19.651,-29.743 0,-17.183 12.925,-29.743 19.651,-29.743 3.363,0 7.291,7.79 7.291,29.743 -0.001,21.954 -3.928,29.743 -7.291,29.743 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1246"
+   d="m 229.248,170.109 -40.065,-20.033 c -3.706,-1.853 -8.211,-0.351 -10.063,3.354 -1.853,3.705 -0.351,8.21 3.354,10.062 l 40.065,20.033 c 1.077,0.539 2.222,0.794 3.349,0.794 2.751,0 5.4,-1.519 6.714,-4.148 1.852,-3.704 0.35,-8.21 -3.354,-10.062 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1248"
+   d="m 185.833,84.113 c 1.127,0 2.271,-0.255 3.348,-0.793 l 40.066,-20.032 c 3.705,-1.853 5.207,-6.357 3.355,-10.063 -1.852,-3.705 -6.357,-5.206 -10.062,-3.354 l -40.066,20.032 c -3.705,1.853 -5.207,6.357 -3.355,10.063 1.314,2.628 3.964,4.147 6.714,4.147 z" />
+	<path
+   style="fill:#ffffff"
+   id="path1250"
+   d="M 225.894,109.198 H 192.44 c -4.143,0 -7.5,3.358 -7.5,7.5 0,4.142 3.357,7.5 7.5,7.5 h 33.454 c 4.143,0 7.5,-3.358 7.5,-7.5 0,-4.142 -3.357,-7.5 -7.5,-7.5 z" />
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1254">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1256">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1258">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1260">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1262">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1264">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1266">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1268">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1270">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1272">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1274">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1276">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1278">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1280">
+</g>
+<g
+   style="fill:#ffffff"
+   id="g1282">
+</g>
+</svg>

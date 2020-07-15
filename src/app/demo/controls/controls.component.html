@@ -47,7 +47,7 @@
               <span [fxFlex]="firstColFlex">{{ control.title }}</span>
               <div [formGroupName]="control.parent">
                 <mat-checkbox [fxFlex]="secondColFlex"
-                              (change)="update(control.parent + 'c' + control.key, $event.checked)"
+                              (change)="update(control.parent + '.' + control.key, $event.checked)"
                               formControlName="{{ control.key }}"></mat-checkbox>
               </div>
               <span fxFlex></span>

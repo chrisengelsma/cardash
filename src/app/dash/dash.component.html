@@ -54,12 +54,37 @@
         <!--              fill="yellow"-->
         <!--              fill-opacity="0.5"></rect>-->
 
+        <image *ngIf="data.indicators.externalLights"
+               [attr.x]="0"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/externalLights.svg"/>
+
+        <image *ngIf="data.indicators.headlights"
+               [attr.x]="20"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/headlights.svg"/>
+
+        <image *ngIf="data.indicators.autoHeadlights"
+               [attr.x]="40"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/autoHeadlights.svg"/>
+
+        <image *ngIf="data.indicators.highBeam"
+               [attr.x]="60"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/highBeam.svg"/>
+
         <image *ngIf="data.indicators.leftTurn"
                [ngClass]="{ 'blinker': data.indicators.leftTurn }"
                [attr.x]="indicatorWidth - 20"
                [attr.y]="8"
                width="15"
                xlink:href="./assets/glyphs/arrow-left.svg"/>
+
       </g>
 
       <g id="topRightIndicators"
@@ -77,6 +102,12 @@
                [attr.y]="8"
                width="15"
                xlink:href="./assets/glyphs/arrow-right.svg"/>
+
+        <image *ngIf="data.indicators.mil"
+               [attr.x]="30"
+               [attr.y]="8"
+               width="15"
+               xlink:href="./assets/glyphs/malfunction.svg"/>
       </g>
 
     </g>
