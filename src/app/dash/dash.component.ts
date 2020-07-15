@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IDashboardData, IMenuOption, IRpmZone, PrimaryTabItemType } from '../models';
+import { IDashboardData, IMenuOption, IRpmZone } from '../models';
 
 export function int(v: number): number { return Math.floor(v); }
 
@@ -391,12 +391,12 @@ export class DashComponent implements OnInit, OnDestroy {
     return { x, y };
   }
 
-  primaryTabColor(tab: PrimaryTabItemType) {
-    return ( tab === this.selectedPrimaryTabLabel ) ? this.colors.white : this.colors.gray;
+  primaryTabColor(tab) {
+    return ( tab === this.menu.find(x => x.key === this.data.selectedPrimaryTab).key ) ? this.colors.white : this.colors.gray;
   }
 
-  primaryTabOpacity(tab: PrimaryTabItemType) {
-    return ( tab === this.selectedPrimaryTabLabel ) ? 1.0 : 0.5;
+  primaryTabOpacity(tab) {
+    return ( tab === this.menu.find(x => x.key === this.data.selectedPrimaryTab).key ) ? 1.0 : 0.5;
   }
 
   primaryTabXY(i: number) {
