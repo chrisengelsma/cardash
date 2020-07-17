@@ -68,8 +68,8 @@ export class DashComponent implements OnInit, OnDestroy {
       hours: 0,
       idleHours: 0,
     },
-    selectedPrimaryTab: 'tripComputer',
-    selectedSecondaryTab: 'trip1',
+    selectedPrimaryTab: 'options',
+    selectedSecondaryTab: 'options',
   };
 
   ////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,8 @@ export class DashComponent implements OnInit, OnDestroy {
   previousPrimaryTabIndex: number = 0;
   selectedSecondaryTabIndex: number = 0;
   previousSecondaryTabIndex: number = 0;
+
+  optionsMenuIndex: number = 0;
 
   ////////////////////////////////////////////////////////////////////////////
   // Colors
@@ -173,8 +175,7 @@ export class DashComponent implements OnInit, OnDestroy {
       secondary: [
         {
           key: 'gforce',
-          type: 'header',
-          title: 'G-Force',
+          type: 'frictionCircle',
         },
         {
           key: 'performanceTimer',
@@ -227,7 +228,18 @@ export class DashComponent implements OnInit, OnDestroy {
     {
       key: 'options',
       primary: 'Options',
-      secondary: []
+      secondary: [
+        {
+          key: 'options',
+          type: 'menu',
+          rows: [
+            { type: 'menuOption', title: 'Display Design' },
+            { type: 'menuOption', title: 'Info Tiles Selection' },
+            { type: 'menuOption', title: 'Units' },
+            { type: 'menuOption', title: 'Software Info' },
+          ]
+        }
+      ]
     },
     {
       key: 'simplify',
@@ -260,6 +272,33 @@ export class DashComponent implements OnInit, OnDestroy {
   get percent() { return 100 * this.data.rpm / this.tachMax; }
 
   get isInGear() { return this.data.gear === 'D' || this.data.gear === 'M'; }
+
+  get frictionCircleRadius() { return 2 * this.menuHeight / 7; }
+
+  get frictionCircleOuterRadius() { return this.frictionCircleRadius + 12; }
+
+  get frictionCircleOuterCf() { return 2 * Math.PI * this.frictionCircleOuterRadius; }
+
+  get frictionCircleDashArray() {
+    return `${ this.frictionCircleOuterCf / 12 }, ${ this.frictionCircleOuterCf / 3 }, ${ this.frictionCircleOuterCf / 6 }, ${ this.frictionCircleOuterCf / 3 }`;
+  }
+
+  get gForceXY() {
+    const sign = Math.sign(this.data.gforce[0]);
+
+    let x = this.frictionCircleRadius * this.data.gforce[0];
+    let y = this.frictionCircleRadius * -this.data.gforce[1];
+
+    if (this.data.gforce[0] === 0) { return { x: 0, y: this.frictionCircleRadius * -this.data.gforce[1] }; }
+
+    const r = Math.min(this.frictionCircleRadius, Math.sqrt(x * x + y * y));
+    const theta = Math.atan(y / x);
+
+    x = sign * r * Math.cos(theta);
+    y = sign * r * Math.sin(theta);
+
+    return { x, y };
+  }
 
   get needleRotation() {
     const rot = -this.percent * 270 / 100;
@@ -317,6 +356,10 @@ export class DashComponent implements OnInit, OnDestroy {
     if (typeof this.interval !== 'undefined') {
       window.clearInterval(this.interval);
     }
+  }
+
+  isCurrentMenuOption(index: number): boolean {
+    return this.optionsMenuIndex === index;
   }
 
   toHours(min: number) { return int(min / 60); }
@@ -445,10 +488,8 @@ export class DashComponent implements OnInit, OnDestroy {
     this.previousSecondaryTabIndex = 0;
     this.selectedSecondaryTabIndex = 0;
 
-
     this.menuScroll = 0;
   }
-
 
   tickRotation(value: number): string {
     const percent = 100 * value / this.tachMax;
@@ -483,7 +524,6 @@ export class DashComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.populateZones();
     this.populateTicks();
-    // this.secondaryMenuAnimationLoop();
     this.watchLoop();
   }
 

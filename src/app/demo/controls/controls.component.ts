@@ -31,11 +31,11 @@ export class ControlsComponent implements OnInit, OnChanges {
     },
     {
       primary: 'options',
-      secondary: [ 'none' ]
+      secondary: [ 'options' ]
     },
     {
       primary: 'simplify',
-      secondary: [ 'none' ]
+      secondary: [ 'simplify' ]
     }
   ];
 
@@ -50,6 +50,11 @@ export class ControlsComponent implements OnInit, OnChanges {
     { title: 'Units', type: 'header' },
 
     { title: 'Units', key: 'unit', type: 'radio', options: this.unitList },
+
+    { title: 'G-Force', type: 'header' },
+
+    { title: 'X', key: 'gforce', type: 'slider', range: [ -1.0, 1.0, 0.01 ], idx: 0 },
+    { title: 'Y', key: 'gforce', type: 'slider', range: [ -1.0, 1.0, 0.01 ], idx: 1 },
 
     { title: 'Indicators', type: 'header' },
 
@@ -97,7 +102,6 @@ export class ControlsComponent implements OnInit, OnChanges {
     { title: 'Distance', key: 'trip1.distance', parent: 'tripComputer', type: 'slider', range: [ 0, 10000, 0.1 ] },
     { title: 'Fuel Economy', key: 'trip1.fuelEconomy', parent: 'tripComputer', type: 'slider', range: [ 0, 40, 0.1 ] },
     { title: 'Time', key: 'trip1.time', parent: 'tripComputer', type: 'slider', range: [ 0, 10000, 0.1 ] },
-
 
     { title: 'Audio', type: 'header' },
 
@@ -230,7 +234,8 @@ export class ControlsComponent implements OnInit, OnChanges {
       oilPressure: [ window.oilPressure ],
       fuelDistance: [ window.fuelDistance ],
       compass: [ window.compass ],
-      gforce: [ window.gforce ],
+      gforce0: [ window.gforce[0] ],
+      gforce1: [ window.gforce[1] ],
       totalMileage: [ window.totalMileage ],
       tripComputer: this._formBuilder.group({
         'trip1.distance': [ window.tripComputer.trip1.distance ],

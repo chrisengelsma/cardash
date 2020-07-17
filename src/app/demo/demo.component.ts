@@ -23,8 +23,9 @@ export class DemoComponent implements OnInit {
     { key: 'tirePressure', default_: [ 36, 36, 36, 36 ] },
     { key: 'totalMileage', default_: 0 },
     { key: 'oilPressure', default_: 28 },
-    { key: 'selectedPrimaryTab', default_: 'tripComputer' },
-    { key: 'selectedSecondaryTab', default_: 'trip1' },
+    { key: 'selectedPrimaryTab', default_: 'options' },
+    { key: 'selectedSecondaryTab', default_: 'options' },
+    { key: 'gforce', default_: [ 0.0, 0.0 ] },
     { key: 'compass', default_: 'N' },
     {
       key: 'tripComputer', default_: {

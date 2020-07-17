@@ -113,19 +113,19 @@
                [attr.x]="indicatorWidth - 25"
                [attr.y]="8"
                width="20"
-               xlink:href="./assets/glyphs/battery.svg" />
+               xlink:href="./assets/glyphs/battery.svg"/>
 
         <image *ngIf="data.indicators.doorAjar"
                [attr.x]="indicatorWidth - 50"
                [attr.y]="8"
                width="20"
-               xlink:href="./assets/glyphs/door-ajar.svg" />
+               xlink:href="./assets/glyphs/door-ajar.svg"/>
 
         <image *ngIf="data.indicators.oilPressure"
                [attr.x]="indicatorWidth - 75"
                [attr.y]="8"
                width="20"
-               xlink:href="./assets/glyphs/oil-can.svg" />
+               xlink:href="./assets/glyphs/oil-can.svg"/>
       </g>
 
     </g>
@@ -355,6 +355,76 @@
                     [attr.fill]="colors.white">{{ data.audio.station | number:'1.1-1' }}</text>
             </g>
 
+            <g *ngIf="secondary.type === 'frictionCircle'"
+               [style.transform]="'translateX(' + menuWidth / 2 + 'px) translateY(' + menuHeight / 2 + 'px)'">
+              <circle [attr.cx]="0"
+                      [attr.cy]="0"
+                      [attr.r]="frictionCircleRadius"
+                      [attr.stroke]="colors.white"
+                      fill-opacity="0"
+                      stroke-width="2px"></circle>
+
+              <circle [attr.cx]="0"
+                      [attr.cy]="0"
+                      [attr.r]="frictionCircleOuterRadius"
+                      [attr.stroke]="colors.white"
+                      [attr.stroke-dasharray]="frictionCircleDashArray"
+                      fill-opacity="0"
+                      stroke-width="2px"></circle>
+
+              <circle *ngFor="let i of [1, 2, 3]"
+                      [attr.cx]="0"
+                      [attr.cy]="0"
+                      [attr.r]="i * frictionCircleRadius / 4"
+                      [attr.stroke]="colors.white"
+                      [attr.stroke-opacity]="1 - (.30 * i)"
+                      fill-opacity="0"></circle>
+
+              <g *ngFor="let i of [0, 45, 90, 135]"
+                 [style.transform]="'rotate(' + i + 'deg)'">
+                <line [attr.x1]="0"
+                      [attr.x2]="0"
+                      [attr.y1]="-frictionCircleRadius"
+                      [attr.y2]="frictionCircleRadius"
+                      stroke-opacity="0.2"
+                      [attr.stroke]="colors.white"></line>
+              </g>
+
+              <circle [attr.cx]="gForceXY.x"
+                      [attr.cy]="gForceXY.y"
+                      r="5"
+                      [attr.fill]="colors.white"></circle>
+
+              <text [attr.x]="0"
+                    [attr.y]="frictionCircleRadius + 15"
+                    class="middle-anchor"
+                    [attr.fill]="colors.white">
+                {{ -data.gforce[1] | number:'1.2-2' }}
+              </text>
+
+              <text [attr.x]="0"
+                    [attr.y]="-frictionCircleRadius - 15"
+                    class="middle-anchor"
+                    [attr.fill]="colors.white">
+                {{ data.gforce[1] | number:'1.2-2' }}
+              </text>
+
+              <text [attr.x]="frictionCircleRadius + 17"
+                    [attr.y]="0"
+                    class="left-anchor"
+                    [attr.fill]="colors.white">
+                {{ data.gforce[0] | number:'1.2-2' }}
+              </text>
+
+              <text [attr.x]="-frictionCircleRadius - 17"
+                    [attr.y]="0"
+                    class="right-anchor"
+                    [attr.fill]="colors.white">
+                {{ -data.gforce[0] | number:'1.2-2' }}
+              </text>
+
+            </g>
+
             <g *ngIf="secondary.type === 'header'">
               <text [attr.x]="menuWidth / 2"
                     [attr.y]="menuHeight / 3"
@@ -367,9 +437,27 @@
                 </tspan>
               </text>
             </g>
+
             <!-- If it has rows -->
-            <g *ngIf="secondary.type === 'rows'">
+            <g *ngIf="secondary.type === 'rows' || secondary.type === 'menu'">
               <g *ngFor="let row of tabRows(i); let j = index;">
+
+                <g *ngIf="row.type === 'menuOption'; let k = index;">
+                  <rect [attr.x]="0"
+                        [attr.y]="j * 30 + 3"
+                        [attr.width]="menuWidth"
+                        [attr.height]="30"
+                        [attr.fill-opacity]="isCurrentMenuOption(k) ? 0.5 : 0.0"
+                        [attr.fill]="colors.white"></rect>
+
+                  <text [attr.x]="10"
+                        [attr.y]="j * 30 + 20"
+                        [attr.fill]="colors.white"
+                        font-size="12pt"
+                        class="left-anchor words">
+                    {{ row.title }}
+                  </text>
+                </g>
 
                 <g *ngIf="row.type === 'metric'">
 
