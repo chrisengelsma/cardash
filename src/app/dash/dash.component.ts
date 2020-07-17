@@ -394,8 +394,12 @@ export class DashComponent implements OnInit, OnDestroy {
       this.data.audio = window.audio;
       this.data.maintenance = window.maintenance;
 
-      if (window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
-        this.animateSelectedSecondaryTabChange(window.selectedSecondaryTab);
+
+      if (window.selectedPrimaryTab === 'options') {
+      } else {
+        if (window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
+          this.animateSelectedSecondaryTabChange(window.selectedSecondaryTab);
+        }
       }
 
       if (window.selectedPrimaryTab !== this.data.selectedPrimaryTab) {
