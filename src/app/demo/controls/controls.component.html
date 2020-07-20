@@ -16,12 +16,13 @@
         </div>
 
         <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="12px">
-          <button mat-raised-button color="primary" (click)="upPressed()">Up</button>
+          <button mat-raised-button color="primary" (click)="upPressed()">^</button>
           <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="12px">
-            <button mat-raised-button color="primary" (click)="leftPressed()">Left</button>
-            <button mat-raised-button color="primary" (click)="rightPressed()">Right</button>
+            <button mat-raised-button color="primary" (click)="leftPressed()">&lt;</button>
+            <button mat-raised-button color="primary" (click)="centerButtonPressed.emit()">O</button>
+            <button mat-raised-button color="primary" (click)="rightPressed()">&gt;</button>
           </div>
-          <button mat-raised-button color="primary" (click)="downPressed()">Down</button>
+          <button mat-raised-button color="primary" (click)="downPressed()">v</button>
         </div>
 
         <div *ngFor="let control of controls"

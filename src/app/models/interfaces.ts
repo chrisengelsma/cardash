@@ -42,6 +42,7 @@ export interface IDashboardData {
   selectedSecondaryTab?: string;
   compass?: CardinalDirectionType;
   gforce?: number[];
+  selectedOption?: string;
   maintenance: {
     oil?: number;
     transmissionFluid?: number;
@@ -101,6 +102,7 @@ declare global {
     selectedSecondaryTab?: string;
     compass?: CardinalDirectionType;
     gforce?: number[];
+    selectedOption?: string;
     maintenance: {
       oil?: number;
       transmissionFluid?: number;

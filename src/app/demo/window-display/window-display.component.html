@@ -5,12 +5,6 @@
     </mat-card-title>
   </mat-card-title-group>
   <mat-card-content>
-    <div style="overflow-y: auto">
-      <mat-checkbox [checked]="showOnlyRelevant"
-                    (change)="showOnlyRelevant = !showOnlyRelevant">
-        Show only relevant variables
-      </mat-checkbox>
-      <pre> {{ printWindow  }} </pre>
-    </div>
+    <pre> {{ printWindow  }} </pre>
   </mat-card-content>
 </mat-card>

@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { DashComponent } from '../dash/dash.component';
 
 @Component({
   selector: 'app-demo',
@@ -8,6 +9,8 @@ import { environment } from '../../environments/environment';
   styleUrls: [ './demo.component.scss' ]
 })
 export class DemoComponent implements OnInit {
+
+  @ViewChild('dashboard', { static: false }) dashboardComponent!: DashComponent;
 
   relevantKeys: { key: string, default_: any }[] = [
     { key: 'rpm', default_: 0 },
@@ -23,8 +26,9 @@ export class DemoComponent implements OnInit {
     { key: 'tirePressure', default_: [ 36, 36, 36, 36 ] },
     { key: 'totalMileage', default_: 0 },
     { key: 'oilPressure', default_: 28 },
-    { key: 'selectedPrimaryTab', default_: 'options' },
-    { key: 'selectedSecondaryTab', default_: 'options' },
+    { key: 'selectedPrimaryTab', default_: 'tripComputer' },
+    { key: 'selectedSecondaryTab', default_: 'trip1' },
+    { key: 'selectedOption', default_: 'displayDesign' },
     { key: 'gforce', default_: [ 0.0, 0.0 ] },
     { key: 'compass', default_: 'N' },
     {
@@ -75,6 +79,14 @@ export class DemoComponent implements OnInit {
   }
 
   get form(): FormGroup { return this._form; }
+
+  centerButtonPressed($event: any): void {
+    try {
+      this.dashboardComponent.onCenterButtonClicked($event);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   submit(): void {
     this.login(this.form.controls.user.value, this.form.controls.pass.value);

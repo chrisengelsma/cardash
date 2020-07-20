@@ -298,27 +298,26 @@
       <g id="selectedPrimaryMenu" style="transform-origin: center center"
          [style.transform]="'translateX(' + menuX0 + 'px) translateY(' + menuY0 + 'px)'">
 
-        <!--        <rect x="0"-->
-        <!--              y="0"-->
-        <!--              [attr.width]="menuWidth"-->
-        <!--              [attr.height]="menuHeight"-->
-        <!--              fill-opacity="0"-->
-        <!--              stroke="white"-->
-        <!--              stroke-dasharray="5, 5"></rect>-->
+<!--        <rect x="0"-->
+<!--              y="0"-->
+<!--              [attr.width]="menuWidth"-->
+<!--              [attr.height]="menuHeight"-->
+<!--              fill-opacity="0"-->
+<!--              stroke="white"-->
+<!--              stroke-dasharray="5, 5"></rect>-->
 
         <g id="activeMenuOption" mask="url(#selectedTabMask)">
-          <!--        <g id="activeMenuOption">-->
 
           <g *ngFor="let secondary of activeTabSections; let i = index;"
              [attr.style]="'transform: translateY(' + ((i * menuHeight) - menuScroll) + 'px)'">
 
-            <!--            <rect x="0"-->
-            <!--                  y="0"-->
-            <!--                  [attr.width]="menuWidth"-->
-            <!--                  [attr.height]="menuHeight"-->
-            <!--                  fill-opacity="0.2"-->
-            <!--                  stroke="white"-->
-            <!--                  stroke-dasharray="5, 5"></rect>-->
+            <!--                        <rect x="0"-->
+            <!--                              y="0"-->
+            <!--                              [attr.width]="menuWidth"-->
+            <!--                              [attr.height]="menuHeight"-->
+            <!--                              fill-opacity="0.2"-->
+            <!--                              stroke="white"-->
+            <!--                              stroke-dasharray="5, 5"></rect>-->
 
             <g *ngIf="secondary.title">
               <text [attr.x]="menuWidth / 2"
@@ -438,26 +437,30 @@
               </text>
             </g>
 
+            <!-- If it's a menu -->
+            <g *ngIf="secondary.type === 'menu'">
+              <g *ngFor="let row of tabRows(i); let j = index;">
+                <rect [attr.x]="0"
+                      [attr.y]="j * 30 + 3"
+                      [attr.width]="menuWidth"
+                      [attr.height]="30"
+                      [attr.fill-opacity]="isCurrentMenuOption(j) ? 0.3 : 0.0"
+                      [attr.fill]="colors.white"></rect>
+
+                <text [attr.x]="10"
+                      [attr.y]="j * 30 + 20"
+                      [attr.fill]="colors.white"
+                      font-size="12pt"
+                      class="left-anchor words">
+                  {{ row.title }}
+                </text>
+              </g>
+            </g>
+
             <!-- If it has rows -->
-            <g *ngIf="secondary.type === 'rows' || secondary.type === 'menu'">
+            <g *ngIf="secondary.type === 'rows'">
               <g *ngFor="let row of tabRows(i); let j = index;">
 
-                <g *ngIf="row.type === 'menuOption'; let k = index;">
-                  <rect [attr.x]="0"
-                        [attr.y]="j * 30 + 3"
-                        [attr.width]="menuWidth"
-                        [attr.height]="30"
-                        [attr.fill-opacity]="isCurrentMenuOption(k) ? 0.5 : 0.0"
-                        [attr.fill]="colors.white"></rect>
-
-                  <text [attr.x]="10"
-                        [attr.y]="j * 30 + 20"
-                        [attr.fill]="colors.white"
-                        font-size="12pt"
-                        class="left-anchor words">
-                    {{ row.title }}
-                  </text>
-                </g>
 
                 <g *ngIf="row.type === 'metric'">
 

@@ -7,11 +7,11 @@
        fxLayoutAlign="space-between stretch">
 
     <div class="dash-wrapper">
-      <app-dash></app-dash>
+      <app-dash #dashboard></app-dash>
     </div>
 
     <div class="options-wrapper" fxLayoutGap="12px">
-      <app-controls class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys"></app-controls>
+      <app-controls class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys" (centerButtonPressed)="centerButtonPressed($event)"></app-controls>
       <app-window-display class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys"></app-window-display>
     </div>
   </div>

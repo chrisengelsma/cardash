@@ -70,6 +70,7 @@ export class DashComponent implements OnInit, OnDestroy {
     },
     selectedPrimaryTab: 'options',
     selectedSecondaryTab: 'options',
+    selectedOption: 'displayDesign'
   };
 
   ////////////////////////////////////////////////////////////////////////////
@@ -80,7 +81,8 @@ export class DashComponent implements OnInit, OnDestroy {
   selectedSecondaryTabIndex: number = 0;
   previousSecondaryTabIndex: number = 0;
 
-  optionsMenuIndex: number = 0;
+  selectedOptionIndex: number = 0;
+  previousOptionIndex: number = 0;
 
   ////////////////////////////////////////////////////////////////////////////
   // Colors
@@ -233,10 +235,10 @@ export class DashComponent implements OnInit, OnDestroy {
           key: 'options',
           type: 'menu',
           rows: [
-            { type: 'menuOption', title: 'Display Design' },
-            { type: 'menuOption', title: 'Info Tiles Selection' },
-            { type: 'menuOption', title: 'Units' },
-            { type: 'menuOption', title: 'Software Info' },
+            { type: 'menuOption', key: 'displayDesign', title: 'Display Design' },
+            { type: 'menuOption', key: 'infoTiles', title: 'Info Tiles Selection' },
+            { type: 'menuOption', key: 'units', title: 'Units' },
+            { type: 'menuOption', key: 'softwareInfo', title: 'Software Info' },
           ]
         }
       ]
@@ -358,8 +360,39 @@ export class DashComponent implements OnInit, OnDestroy {
     }
   }
 
+  switchUnits(): void {
+    window.unit = ( window.unit === 'imperial' ) ? 'metric' : 'imperial';
+  }
+
+  activateOptionsMenu(): void {
+    switch (this.selectedOptionIndex) {
+      case 0: // Display Design
+              // TODO
+        break;
+      case 1: // Info Tiles Select
+              // TODO
+        break;
+      case 2: // Units
+        this.switchUnits();
+        break;
+      case 3:
+        break;
+      default:
+    }
+  }
+
+  onCenterButtonClicked(event: any): void {
+    switch (this.selectedPrimaryTabIndex) {
+      case 4:
+        this.activateOptionsMenu();
+        break;
+      default:
+        return;
+    }
+  }
+
   isCurrentMenuOption(index: number): boolean {
-    return this.optionsMenuIndex === index;
+    return this.selectedOptionIndex === index;
   }
 
   toHours(min: number) { return int(min / 60); }
@@ -395,11 +428,12 @@ export class DashComponent implements OnInit, OnDestroy {
       this.data.maintenance = window.maintenance;
 
 
-      if (window.selectedPrimaryTab === 'options') {
-      } else {
-        if (window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
-          this.animateSelectedSecondaryTabChange(window.selectedSecondaryTab);
-        }
+      if (window.selectedPrimaryTab === 'options' && window.selectedOption !== this.data.selectedOption) {
+        this.animateOptionsChange(window.selectedOption);
+      }
+
+      if (window.selectedPrimaryTab !== 'options' && window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
+        this.animateSelectedSecondaryTabChange(window.selectedSecondaryTab);
       }
 
       if (window.selectedPrimaryTab !== this.data.selectedPrimaryTab) {
@@ -480,6 +514,12 @@ export class DashComponent implements OnInit, OnDestroy {
     this.selectedSecondaryTabIndex = this.activeTabSections.findIndex(x => x.key === tab);
 
     this.secondaryTabProgress = ( this.selectedSecondaryTabIndex - this.previousSecondaryTabIndex ) * this.menuHeight;
+  }
+
+  animateOptionsChange(option: string): void {
+    this.data.selectedOption = option;
+    this.previousOptionIndex = this.selectedOptionIndex;
+    this.selectedOptionIndex = this.activeTabSections[0].rows.findIndex(x => x.key === option);
   }
 
   animateSelectedPrimaryTabChange(tab: string): void {

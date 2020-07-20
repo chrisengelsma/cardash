@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { CardinalDirectionType, GearType, PrimaryTabItemType, UnitType } from '../../models';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
@@ -11,6 +11,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class ControlsComponent implements OnInit, OnChanges {
 
   @Input() relevantKeys: { key: string, default_: any }[] = [];
+
+  @Output() centerButtonPressed: EventEmitter<void> = new EventEmitter<void>();
 
   menu: { primary: PrimaryTabItemType, secondary: string[] }[] = [
     {
@@ -37,6 +39,13 @@ export class ControlsComponent implements OnInit, OnChanges {
       primary: 'simplify',
       secondary: [ 'simplify' ]
     }
+  ];
+
+  options = [
+    'displayDesign',
+    'infoTiles',
+    'units',
+    'softwareInfo'
   ];
 
   readonly firstColFlex: number = 30;
@@ -126,6 +135,8 @@ export class ControlsComponent implements OnInit, OnChanges {
 
   get selectedSecondaryTab() { return window.selectedSecondaryTab; }
 
+  get selectedOption() { return window.selectedOption; }
+
   get tripComputer() { return window.tripComputer; }
 
   get form(): FormGroup { return this._form; }
@@ -176,18 +187,37 @@ export class ControlsComponent implements OnInit, OnChanges {
 
   upPressed(): void {
     const currentTab = this.menu.find(x => x.primary === this.selectedPrimaryTab);
-    let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) - 1;
-    if (i < 0) { i = currentTab.secondary.length - 1; }
-    window.selectedSecondaryTab = currentTab.secondary[i];
-    this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+    if (currentTab.primary === 'options') {
+
+      let i = this.options.findIndex(x => x === this.selectedOption) - 1;
+      if (i < 0 ) { i = currentTab.secondary.length - 1; }
+      window.selectedOption = this.options[i];
+      this.update('selectedOption', this.selectedOption);
+
+    } else {
+      let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) - 1;
+      if (i < 0) { i = currentTab.secondary.length - 1; }
+      window.selectedSecondaryTab = currentTab.secondary[i];
+      this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+    }
   }
 
   downPressed(): void {
     const currentTab = this.menu.find(x => x.primary === this.selectedPrimaryTab);
-    let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) + 1;
-    if (i === currentTab.secondary.length) { i = 0; }
-    window.selectedSecondaryTab = currentTab.secondary[i];
-    this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+    if (currentTab.primary === 'options') {
+
+      let i = this.options.findIndex(x => x === this.selectedOption) + 1;
+      if (i === this.options.length) { i = 0; }
+      window.selectedOption = this.options[i];
+      this.update('selectedOption', this.selectedOption);
+
+    } else {
+
+      let i = currentTab.secondary.findIndex(x => x === this.selectedSecondaryTab) + 1;
+      if (i === currentTab.secondary.length) { i = 0; }
+      window.selectedSecondaryTab = currentTab.secondary[i];
+      this.update('selectedSecondaryTab', this.selectedSecondaryTab);
+    }
   }
 
   rightPressed(): void {
