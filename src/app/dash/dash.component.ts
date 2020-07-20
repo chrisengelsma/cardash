@@ -68,8 +68,8 @@ export class DashComponent implements OnInit, OnDestroy {
       hours: 0,
       idleHours: 0,
     },
-    selectedPrimaryTab: 'options',
-    selectedSecondaryTab: 'options',
+    selectedPrimaryTab: 'tripComputer',
+    selectedSecondaryTab: 'trip1',
     selectedOption: 'displayDesign'
   };
 
@@ -259,6 +259,9 @@ export class DashComponent implements OnInit, OnDestroy {
   secondaryTabProgress: number = 0;
 
   constructor() {
+    for (const key of Object.keys(this.data)) {
+      window[key] = this.data[key];
+    }
   }
 
   get menuScroll() { return this._menuScroll; }
@@ -375,7 +378,8 @@ export class DashComponent implements OnInit, OnDestroy {
       case 2: // Units
         this.switchUnits();
         break;
-      case 3:
+      case 3: // Software Version
+        // TODO
         break;
       default:
     }

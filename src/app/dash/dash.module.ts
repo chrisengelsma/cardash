@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashComponent } from './dash.component';
+import { createCustomElement } from '@angular/elements';
 
 @NgModule({
   declarations: [
@@ -20,4 +21,11 @@ import { DashComponent } from './dash.component';
     DashComponent,
   ]
 })
-export class DashModule {}
+export class DashModule {
+  constructor(private injector: Injector) {
+    const myElement = createCustomElement(DashComponent, { injector });
+    customElements.define('app-dashboard', myElement);
+  }
+
+  ngDoBootstrap() {}
+}
