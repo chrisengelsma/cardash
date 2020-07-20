@@ -6,11 +6,11 @@
        fxLayoutGap="12px"
        fxLayoutAlign="space-between stretch">
 
-    <div class="dash-wrapper" style="max-height: 60vh">
+    <div class="dash-wrapper" [style.max-height]="isProd ? '100vh' : '60vh'">
       <app-dash #dashboard></app-dash>
     </div>
 
-    <div class="options-wrapper" fxLayoutGap="12px">
+    <div *ngIf="!isProd" class="options-wrapper" fxLayoutGap="12px">
       <app-controls class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys" (centerButtonPressed)="centerButtonPressed($event)"></app-controls>
       <app-window-display class="scrollable-wrapper" fxFlex [relevantKeys]="relevantKeys"></app-window-display>
     </div>

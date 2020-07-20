@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { DashComponent } from '../dash/dash.component';
@@ -70,15 +70,20 @@ export class DemoComponent implements OnInit {
       }
     },
   ];
-
-  authenticated: boolean = false;
-
   private _form: FormGroup;
+  private _authenticated = false;
 
   constructor(private _formBuilder: FormBuilder) {
   }
 
+  get authenticated(): boolean {
+    if (this.isProd) { return true; }
+    return this._authenticated;
+  }
+
   get form(): FormGroup { return this._form; }
+
+  get isProd(): boolean { return environment.production; }
 
   centerButtonPressed($event: any): void {
     try {
@@ -95,7 +100,7 @@ export class DemoComponent implements OnInit {
   login(user: string, pass: string): void {
     if (user === environment.user && pass === environment.password) {
       localStorage.setItem('car-dash', JSON.stringify({ user, pass }));
-      this.authenticated = true;
+      this._authenticated = true;
     }
   }
 
