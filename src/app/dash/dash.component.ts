@@ -12,6 +12,10 @@ export class DashComponent implements OnInit, OnDestroy {
   fps = 60;
   refreshRate: number = 1000 / this.fps;
   interval: number;
+  blinkInterval: number;
+  blinkOn: boolean = false;
+  isInSubMenu: boolean = false;
+  selectedSubMenu: string = '';
 
   ////////////////////////////////////////////////////////////////////////////
   // Window objects
@@ -59,7 +63,10 @@ export class DashComponent implements OnInit, OnDestroy {
     },
     audio: {
       wave: 'fm',
-      station: 89.1
+      station: 89.1,
+      artist: '',
+      song: '',
+      album: '',
     },
     maintenance: {
       oil: 100,
@@ -91,12 +98,12 @@ export class DashComponent implements OnInit, OnDestroy {
     white: '#ffffff',
     gray: '#cccccc',
     blue1: '#313a57',
-    yellow1: '#dab86e',
+    yellow1: '#9f8751',
     yellow2: '#ffc348',
-    orange1: '#c37355',
+    orange1: '#7c4a37',
     orange2: '#ef7f58',
-    red1: '#fc0f3c',
-    red2: '#ee5769',
+    red1: '#be0b2d',
+    red2: '#f11d36',
     green1: '#69bd8a'
   };
 
@@ -256,6 +263,42 @@ export class DashComponent implements OnInit, OnDestroy {
     }
   ];
 
+  subMenu: IMenuOption[] = [
+    {
+      key: 'softwareInfo',
+      secondary: [
+        {
+          key: 'softwareInfo',
+          type: 'header',
+          title: 'Software Info',
+          headers: [ 'Nothing to see', 'here yet' ],
+        }
+      ]
+    },
+    {
+      key: 'displayDesign',
+      secondary: [
+        {
+          key: 'displayDesign',
+          type: 'header',
+          title: 'Display Design',
+          headers: [ 'Nothing to see', 'here yet' ]
+        }
+      ]
+    },
+    {
+      key: 'infoTiles',
+      secondary: [
+        {
+          key: 'infoTiles',
+          type: 'header',
+          title: 'Info Tiles',
+          headers: [ 'Nothing to see', 'here yet' ]
+        }
+      ]
+    },
+  ];
+
   secondaryTabProgress: number = 0;
 
   constructor() {
@@ -277,6 +320,8 @@ export class DashComponent implements OnInit, OnDestroy {
   get percent() { return 100 * this.data.rpm / this.tachMax; }
 
   get isInGear() { return this.data.gear === 'D' || this.data.gear === 'M'; }
+
+  get isInDrive() { return this.data.gear === 'D'; }
 
   get frictionCircleRadius() { return 2 * this.menuHeight / 7; }
 
@@ -311,8 +356,21 @@ export class DashComponent implements OnInit, OnDestroy {
   }
 
   get activeTabSections() {
+    let result = [];
     try {
-      return this.menu.find(x => x.key === this.data.selectedPrimaryTab).secondary;
+      if (this.isInSubMenu) {
+        const sub = this.subMenu.find(x => x.key === this.selectedSubMenu);
+        if (sub) {
+          result = sub.secondary;
+        } else {
+          this.isInSubMenu = false;
+          this.selectedSubMenu = '';
+        }
+      }
+      if (!this.isInSubMenu) {
+        result = this.menu.find(x => x.key === this.data.selectedPrimaryTab).secondary;
+      }
+      return result;
     } catch (e) {
       return [];
     }
@@ -322,7 +380,12 @@ export class DashComponent implements OnInit, OnDestroy {
 
   get maskDashArray() {
     const meterValue = ( ( this.percent * this.semiCf ) / 100 );
-    return `0, ${ this.semiCf - meterValue }, ${ meterValue }, ${ this.cf - this.semiCf }`;
+
+    // This fills in the current RPM
+    // return `0, ${ this.semiCf - meterValue }, ${ meterValue }, ${ this.cf - this.semiCf }`;
+
+    // This fills in the remaining RPM
+    return `${ this.semiCf - meterValue }, ${ meterValue }, 0, ${ this.cf - this.semiCf }`;
   }
 
   get indicatorY0() { return this.meterDimension / 3; }
@@ -361,6 +424,9 @@ export class DashComponent implements OnInit, OnDestroy {
     if (typeof this.interval !== 'undefined') {
       window.clearInterval(this.interval);
     }
+    if (typeof this.blinkInterval !== 'undefined') {
+      window.clearInterval(this.blinkInterval);
+    }
   }
 
   switchUnits(): void {
@@ -370,16 +436,19 @@ export class DashComponent implements OnInit, OnDestroy {
   activateOptionsMenu(): void {
     switch (this.selectedOptionIndex) {
       case 0: // Display Design
-              // TODO
+        this.isInSubMenu = true;
+        this.selectedSubMenu = 'displayDesign';
         break;
       case 1: // Info Tiles Select
-              // TODO
+        this.isInSubMenu = true;
+        this.selectedSubMenu = 'infoTiles';
         break;
       case 2: // Units
         this.switchUnits();
         break;
       case 3: // Software Version
-        // TODO
+        this.isInSubMenu = true;
+        this.selectedSubMenu = 'softwareInfo';
         break;
       default:
     }
@@ -409,6 +478,10 @@ export class DashComponent implements OnInit, OnDestroy {
 
   watchLoop(): void {
     const speed = 16;
+
+    this.blinkInterval = window.setInterval(() => {
+      this.blinkOn = !this.blinkOn;
+    }, 400);
 
     this.interval = window.setInterval(() => {
       this.data.rpm = Math.max(this.min(this.tachMax, window.rpm));
@@ -513,22 +586,30 @@ export class DashComponent implements OnInit, OnDestroy {
   }
 
   animateSelectedSecondaryTabChange(tab: string): void {
-    this.data.selectedSecondaryTab = tab;
-    this.previousSecondaryTabIndex = this.selectedSecondaryTabIndex;
-    this.selectedSecondaryTabIndex = this.activeTabSections.findIndex(x => x.key === tab);
+    if (!this.isInSubMenu) {
+      this.data.selectedSecondaryTab = tab;
+      this.previousSecondaryTabIndex = this.selectedSecondaryTabIndex;
 
-    this.secondaryTabProgress = ( this.selectedSecondaryTabIndex - this.previousSecondaryTabIndex ) * this.menuHeight;
+      this.selectedSecondaryTabIndex = this.activeTabSections.findIndex(x => x.key === tab);
+
+      this.secondaryTabProgress = ( this.selectedSecondaryTabIndex - this.previousSecondaryTabIndex ) * this.menuHeight;
+    }
   }
 
   animateOptionsChange(option: string): void {
-    this.data.selectedOption = option;
-    this.previousOptionIndex = this.selectedOptionIndex;
-    this.selectedOptionIndex = this.activeTabSections[0].rows.findIndex(x => x.key === option);
+    if (!this.isInSubMenu) {
+      this.data.selectedOption = option;
+      this.previousOptionIndex = this.selectedOptionIndex;
+      this.selectedOptionIndex = this.activeTabSections[0].rows.findIndex(x => x.key === option);
+    }
   }
 
   animateSelectedPrimaryTabChange(tab: string): void {
     this.previousPrimaryTabIndex = this.selectedPrimaryTabIndex;
     this.selectedPrimaryTabIndex = this.menu.findIndex(x => x.key === tab);
+
+    this.isInSubMenu = false;
+    this.selectedSubMenu = '';
 
     this.data.selectedPrimaryTab = tab;
 
@@ -587,10 +668,10 @@ export class DashComponent implements OnInit, OnDestroy {
   }
 
   populateZones(): void {
-    this.zones.push({ color: this.colors.blue1, outlineColor: this.colors.white, low: 0 });
-    this.zones.push({ color: this.colors.yellow1, outlineColor: this.colors.yellow2, low: 5500 });
-    this.zones.push({ color: this.colors.orange1, outlineColor: this.colors.orange2, low: 6000 });
-    this.zones.push({ color: this.colors.red1, outlineColor: this.colors.red2, low: 6500 });
+    this.zones.push({ colorOff: this.colors.blue1, colorOn: this.colors.white, outlineColor: this.colors.white, low: 0 });
+    this.zones.push({ colorOff: this.colors.yellow1, colorOn: this.colors.yellow2, outlineColor: this.colors.yellow2, low: 5500 });
+    this.zones.push({ colorOff: this.colors.orange1, colorOn: this.colors.orange2, outlineColor: this.colors.orange2, low: 6000 });
+    this.zones.push({ colorOff: this.colors.red1, colorOn: this.colors.red2, outlineColor: this.colors.red2, low: 6500 });
   }
 
   populateTicks(): void {
@@ -621,8 +702,6 @@ export class DashComponent implements OnInit, OnDestroy {
       ? this.colors.white
       : this.colors.red1;
   }
-
-  max(v1: number, v2: number) { return ( v1 > v2 ) ? v1 : v2; }
 
   min(v1: number, v2: number) { return ( v1 < v2 ) ? v1 : v2; }
 

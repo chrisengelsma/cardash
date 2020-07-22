@@ -64,6 +64,32 @@
 
           </ng-container>
 
+          <ng-container *ngIf="control.type === 'text'">
+            <div *ngIf="control.parent !== undefined; then embeddedTextBlock else regularTextBlock"></div>
+
+            <ng-template #embeddedTextBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title }}</span>
+
+              <div [formGroupName]="control.parent">
+                <input matInput
+                       (change)="update(control.parent + '.' + control.key, $event['value'])"
+                       formControlName="{{ control.key }}"/>
+              </div>
+              <span fxFlex></span>
+            </ng-template>
+
+            <ng-template #regularTextBlock>
+              <span [fxFlex]="firstColFlex">{{ control.title}}</span>
+
+              <input matInput
+                     [fxFlex]="secondColFlex"
+                     (change)="update(control.key, $event['value'])"
+                     formControlName="{{ control.key }}"/>
+              <span fxFlex></span>
+
+            </ng-template>
+          </ng-container>
+
           <ng-container *ngIf="control.type === 'radio'">
 
             <div *ngIf="control.parent !== undefined; then embeddedBlock else regularBlock"></div>

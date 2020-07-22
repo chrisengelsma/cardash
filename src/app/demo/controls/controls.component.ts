@@ -116,6 +116,9 @@ export class ControlsComponent implements OnInit, OnChanges {
 
     { title: 'Wave', key: 'wave', parent: 'audio', type: 'radio', options: [ 'fm', 'am' ] },
     { title: 'Station', key: 'station', parent: 'audio', type: 'slider', range: [ 89.1, 107.5, 0.2 ] },
+    { title: 'Artist', key: 'artist', parent: 'audio', type: 'text' },
+    { title: 'Album', key: 'album', parent: 'audio', type: 'text' },
+    { title: 'Song', key: 'song', parent: 'audio', type: 'text' },
 
     { title: 'Maintenance', type: 'header' },
 
@@ -282,6 +285,9 @@ export class ControlsComponent implements OnInit, OnChanges {
       audio: this._formBuilder.group({
         wave: [ window.audio.wave ],
         station: [ window.audio.station ],
+        artist: [ window.audio.artist ],
+        album: [ window.audio.album ],
+        song: [ window.audio.song ],
       }),
       indicators: this._formBuilder.group({
         autoHeadlights: [ window.indicators.autoHeadlights ],

@@ -1,7 +1,7 @@
-import { CardinalDirectionType, GearType, PrimaryTabItemType, RadioFrequencyType, SecondaryTabItemType, UnitType } from './types';
+import { CardinalDirectionType, GearType, RadioFrequencyType, UnitType } from './types';
 
 export interface IMenuOption {
-  key?: PrimaryTabItemType;
+  key?: string;
   primary?: string;
   secondary?: {
     key?: string;
@@ -15,12 +15,14 @@ export interface IMenuOption {
       value?: any;
       units?: string;
       decimals?: number;
+      menu?: IMenuOption[];
     }[]
   }[];
 }
 
 export interface IRpmZone {
-  color?: string;
+  colorOff?: string;
+  colorOn?: string;
   low?: number;
   outlineColor?: string;
 }
@@ -73,6 +75,9 @@ export interface IDashboardData {
   audio?: {
     wave?: RadioFrequencyType;
     station?: number;
+    artist?: string;
+    album?: string;
+    song?: string;
   };
 
   performance: {
@@ -133,6 +138,9 @@ declare global {
     audio?: {
       wave?: RadioFrequencyType;
       station?: number;
+      artist?: string;
+      song?: string;
+      album?: string;
     };
 
     performance: {

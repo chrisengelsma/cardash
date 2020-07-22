@@ -53,6 +53,9 @@ export class DemoComponent implements OnInit {
       key: 'audio', default_: {
         wave: 'fm',
         station: 89.1,
+        artist: 'Prince',
+        album: 'Purple Rain',
+        song: 'Let\'s Go Crazy'
       }
     },
     {
