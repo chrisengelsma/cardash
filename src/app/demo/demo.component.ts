@@ -86,7 +86,7 @@ export class DemoComponent implements OnInit {
 
   get form(): FormGroup { return this._form; }
 
-  get isProd(): boolean { return environment.production; }
+  get isProd(): boolean { return false; }
 
   centerButtonPressed($event: any): void {
     try {
