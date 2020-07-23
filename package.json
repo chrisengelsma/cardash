@@ -38,6 +38,8 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.29",
     "@fortawesome/free-solid-svg-icons": "^5.13.1",
     "font-awesome": "^4.7.0",
+    "moment-timezone": "^0.5.31",
+    "moment": "^2.27.0",
     "rxjs": "^6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "^0.10.3"

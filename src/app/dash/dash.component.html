@@ -302,6 +302,32 @@
               stroke-width="6"/>
       </g>
 
+      <!-- SECONDARY SCROLL BAR -->
+      <g id="secondaryScrollBar"
+         style="transform-origin: center center"
+         [style.opacity]="scrollbarOpacity"
+         [style.transform]="'translateX(' + menuScrollX0 + 'px) translateY(' + menuScrollY0 + 'px)'">
+
+        <line [attr.x1]="0"
+              [attr.y1]="0"
+              [attr.x2]="0"
+              [attr.y2]="menuHeight"
+              [attr.stroke]="colors.white"
+              stroke-width="4px"
+              [attr.stroke-dasharray]="menuScrollDashArray"
+              opacity="0.5"/>
+
+        <line [attr.x1]="0"
+              [attr.y1]="menuScrollY"
+              [attr.x2]="0"
+              [attr.y2]="menuScrollY + menuScrollSectionHeight"
+              [attr.stroke]="colors.white"
+              stroke-width="4px"
+              [attr.stroke-dasharray]="menuScrollDashArray"
+              opacity="1"/>
+
+      </g>
+
       <!-- SECONDARY MENU -->
       <g id="selectedPrimaryMenu"
          style="transform-origin: center center"
@@ -309,6 +335,7 @@
 
         <!--        <rect x="0"-->
         <!--              y="0"-->
+        <!--              *ngIf="debug"-->
         <!--              [attr.width]="menuWidth"-->
         <!--              [attr.height]="menuHeight"-->
         <!--              fill-opacity="0"-->
@@ -320,13 +347,14 @@
           <g *ngFor="let secondary of activeTabSections; let i = index;"
              [attr.style]="'transform: translateY(' + ((i * menuHeight) - menuScroll) + 'px)'">
 
-            <!--                        <rect x="0"-->
-            <!--                              y="0"-->
-            <!--                              [attr.width]="menuWidth"-->
-            <!--                              [attr.height]="menuHeight"-->
-            <!--                              fill-opacity="0.2"-->
-            <!--                              stroke="white"-->
-            <!--                              stroke-dasharray="5, 5"></rect>-->
+            <!--            <rect x="0"-->
+            <!--                  y="0"-->
+            <!--                  *ngIf="debug"-->
+            <!--                  [attr.width]="menuWidth"-->
+            <!--                  [attr.height]="menuHeight"-->
+            <!--                  fill-opacity="0.2"-->
+            <!--                  stroke="white"-->
+            <!--                  stroke-dasharray="5, 5"></rect>-->
 
             <g *ngIf="secondary.title">
               <text [attr.x]="menuWidth / 2"

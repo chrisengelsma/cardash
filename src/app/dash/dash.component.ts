@@ -17,6 +17,10 @@ export class DashComponent implements OnInit, OnDestroy {
   isInSubMenu: boolean = false;
   selectedSubMenu: string = '';
 
+  lastSecondaryScrollClickTimestamp: Date = new Date();
+  scrollbarOpacity: number = 0.0;
+  menuScrollGapHeight: number = 2.0;
+
   ////////////////////////////////////////////////////////////////////////////
   // Window objects
 
@@ -307,6 +311,28 @@ export class DashComponent implements OnInit, OnDestroy {
     }
   }
 
+  get menuScrollX0() { return this.menuX0 + this.menuWidth + 4; }
+
+  get menuScrollY0() { return this.menuY0; }
+
+  get menuScrollDashArray() {
+    return `${ this.menuScrollSectionHeight }, ${ this.menuScrollGapHeight }`;
+  }
+
+  get menuScrollY() {
+    const numGaps = this.numSecondarySections - 1;
+    return this.selectedSecondaryTabIndex * (this.menuScrollSectionHeight + numGaps);
+  }
+
+  get numSecondarySections() {
+    return this.menu[this.selectedPrimaryTabIndex].secondary.length;
+  }
+
+  get menuScrollSectionHeight() {
+    const numGaps = this.numSecondarySections - 1;
+    return ( this.menuHeight - ( numGaps * this.menuScrollGapHeight ) ) / this.numSecondarySections;
+  }
+
   get menuScroll() { return this._menuScroll; }
 
   set menuScroll(scroll: number) { this._menuScroll = scroll; }
@@ -476,6 +502,10 @@ export class DashComponent implements OnInit, OnDestroy {
     return this.activeTabSections[i].rows;
   }
 
+  secondsSince(date: Date): number {
+    return Math.round(( new Date() ).getTime() - date.getTime()) / 1000;
+  }
+
   watchLoop(): void {
     const speed = 16;
 
@@ -505,6 +535,11 @@ export class DashComponent implements OnInit, OnDestroy {
       this.data.maintenance = window.maintenance;
 
 
+      // For the scroll bar
+      if (window.selectedPrimaryTab === this.data.selectedPrimaryTab && window.selectedSecondaryTab !== this.data.selectedSecondaryTab) {
+        this.lastSecondaryScrollClickTimestamp = new Date();
+      }
+
       if (window.selectedPrimaryTab === 'options' && window.selectedOption !== this.data.selectedOption) {
         this.animateOptionsChange(window.selectedOption);
       }
@@ -517,11 +552,22 @@ export class DashComponent implements OnInit, OnDestroy {
         this.animateSelectedPrimaryTabChange(window.selectedPrimaryTab);
       }
 
+      ///////////////////////////////////////////////////////////////////////
+      // Animations
+
+      // For the scrollbar opacity, start fading at a second
+      if (this.secondsSince(this.lastSecondaryScrollClickTimestamp) > 1.0) {
+        this.scrollbarOpacity = Math.max(0.0, this.scrollbarOpacity - 0.05);
+      } else {
+        this.scrollbarOpacity = 1.0;
+      }
+
       if (Math.abs(this.menuScroll - this.selectedSecondaryTabIndex * this.menuHeight) > 1) {
         this.menuScroll += speed * Math.sign(this.secondaryTabProgress);
       } else {
         this.secondaryTabProgress = 0;
       }
+
     }, this.refreshRate);
   }
 
@@ -587,6 +633,7 @@ export class DashComponent implements OnInit, OnDestroy {
 
   animateSelectedSecondaryTabChange(tab: string): void {
     if (!this.isInSubMenu) {
+
       this.data.selectedSecondaryTab = tab;
       this.previousSecondaryTabIndex = this.selectedSecondaryTabIndex;
 
